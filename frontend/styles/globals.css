@@ -9,8 +9,15 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+  color: #0070f3;
 }
 
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
+}
+
+body {
+  font-family: 'Andika New Basic', sans-serif;
 }
