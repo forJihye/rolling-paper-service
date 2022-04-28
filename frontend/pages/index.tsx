@@ -1,14 +1,11 @@
 import type { NextPage } from 'next';
-import { signIn, signOut, getSession, useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { signIn, signOut, getSession, useSession } from 'next-auth/react';
 import Layout from '../components/layout';
 
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
-  const loading = status === "loading"
-
-  // When rendering client side don't display anything until loading is complete
-  // if (typeof window !== "undefined" && loading) return null
+  
   return (
     <Layout>    
       <h1>Wellcom</h1>
