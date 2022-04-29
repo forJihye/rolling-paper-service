@@ -1,40 +1,28 @@
-import type { NextPage } from 'next';
-import Link from 'next/link';
-import { signIn, signOut, getSession, useSession } from 'next-auth/react';
+import { NextPage } from 'next';
+import { signIn, useSession } from 'next-auth/react';
 import Layout from '../components/layout';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 const Home: NextPage = () => {
-  const { data: session, status } = useSession();
-  
+  const session = useSession();
+  const router = useRouter();
+  useEffect(() => {
+    if (session) {
+      router.push('/main');
+    }
+  }, []);
+
   return (
     <Layout>    
       <h1>Wellcom</h1>
       {!session && <>
-        <a 
-          // href="/api/auth/signin" 
-          onClick={(ev) => {
+        <p>서비스 이용하기</p>
+        <a onClick={(ev) => {
             ev.preventDefault();
-            signIn()
+            signIn('google', {callbackUrl: '/main'});
           }}
-        >Sign in with Google</a>
-      </>}
-      {session?.user && <>
-        <a 
-          // href={`/api/auth/signout`} 
-          onClick={(e) => {
-            e.preventDefault()
-            signOut()
-          }}
-        >Sing out {session.user.name ?? session.user.email}</a>
-        <br />
-        <nav>
-          <li>
-            <Link href="/me">내 정보 보기</Link>
-          </li>
-          <li>
-            <Link href="/api-example">API 예시</Link>
-          </li>
-        </nav>
+        >Google 로그인</a>
       </>}
     </Layout>
   )

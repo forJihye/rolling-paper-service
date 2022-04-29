@@ -1,7 +1,8 @@
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import { getStorage } from "firebase/storage";
+import { getFirestore } from "firebase/firestore";
 
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
   authDomain: process.env.FIREBASE_AUTH_DOMAIN,
   projectId: process.env.FIREBASE_PROJECT_ID,
@@ -12,6 +13,16 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
 
-export {app}
+export { app, db, storage };
+// const secret = process.env.NEXTAUTH_SECRET
+// export default async (req: NextApiRequest, res: NextApiResponse) => {
+//   const token = await getToken({ req, secret })
+//   res.send(JSON.stringify(token, null, 2))
+// }
+// export default async (req: NextApiRequest, res: NextApiResponse) => {
+//   const session = await getSession({ req })
+//   res.send(JSON.stringify(session, null, 2))
+// }
