@@ -1,23 +1,32 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'GmarketSans';
+  src: url("../public/fonts/GmarketSansLight.otf") format("otf"),
+      url("../public/fonts/GmarketSansTTFLight.ttf") format("truetype");
+  font-weight: lighter;
+  font-style: noraml;
+}
+@font-face {
+  font-family: 'GmarketSans';
+  src: url("../public/fonts/GmarketSansMedium.otf") format("otf"),
+      url("../public/fonts/GmarketSansTTFMedium.ttf") format("truetype");
+  font-weight: 400;
+  font-style: noraml;
+}
+@font-face {
+  font-family: 'GmarketSans';
+  src: url("../public/fonts/GmarketSansBold.otf") format("otf"),
+      url("../public/fonts/GmarketSansTTFBold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: noraml;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-  color: #0070f3;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Andika New Basic', sans-serif;
+@layer base {
+  html {
+    font-family: GmarketSans;
+    font-weight: 400;
+  }
 }
