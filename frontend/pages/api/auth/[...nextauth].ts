@@ -36,7 +36,10 @@ export default NextAuth({
   }),
   callbacks: {
     async session({ session, user, token }) {
-      return session;
+      return {
+        ...session,
+        user
+      };
     },
     async jwt ({token, user, account, profile, isNewUser}) {
       if (account) { // 로그인 직후 토큰에 대한 OAuth access_token 유지

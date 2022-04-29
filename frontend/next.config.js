@@ -7,6 +7,11 @@ const nextConfig = {
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
   },
+  api: {
+    bodyParser: {
+      sizeLimit: '1mb',
+    },
+  },
 }
 
 module.exports = nextConfig
