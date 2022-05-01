@@ -17,6 +17,7 @@ type PaperConfig = {
 
 const sessions = collection(db, "sessions");
 const users = collection(db, "users");
+const papersRef = collection(db, "papers");
 
 export default async function handler( req: NextApiRequest, res: NextApiResponse<any> ) {
   const session = await getSession({req});
@@ -27,11 +28,9 @@ export default async function handler( req: NextApiRequest, res: NextApiResponse
     email: string;
     id: string;
   }
-  // console.log(req.cookies['next-auth.session-token'])
   if (!session) {
     return res.status(401).json({ error: 'Permission Denied' })
   } else {
-    const paperRef = doc(db, 'papers', user.id);
     const paperData = {
       userName: user.name,
       friendName: req.body.friendName,
@@ -41,7 +40,12 @@ export default async function handler( req: NextApiRequest, res: NextApiResponse
       isCompleted: false,
       posts: [],
     };
-    setDoc(doc(paperRef, 'paper'), paperData);
+    // const paperRef = doc(db, 'papers', user.id);
+    // setDoc(doc(paperRef, 'paper'), paperData);
+    const q = query(papersRef, where(user.id, '==', true));
+    const querySnapshot = await getDocs(q);
+    console.log(querySnapshot.docs)
+    
     return res.status(200).json({data: paperData});
   }
 }
