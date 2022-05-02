@@ -1,36 +1,40 @@
 import Layout from "@/components/layout";
+import axios from "axios";
+import Router from 'next/router';
 import { NextPage } from "next";
+import { useRouter } from "next/router";
 import { MouseEvent, useRef } from "react";
 
 const PaperCreate: NextPage = () => {
+  const router = useRouter();
   const nameRef = useRef<HTMLInputElement>(null);
   const birthRef = useRef<HTMLInputElement>(null);
 
-  const onPaperSubmit = (ev: MouseEvent) => {
+  const onPaperSubmit = async (ev: MouseEvent) => {
     ev.preventDefault();
     const nameVal = nameRef.current?.value as string;
     const birthVal = birthRef.current?.value as string;
     if (!nameVal.length || !birthVal.length) return window.alert('잘못된 입력');
-    
-    fetch('/api/paper', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        friendName: nameVal,
-        friendBirth: birthVal
-      })
-    })
-    .then(res => res.json())
-    .then(data => {
-      console.log(data);
-    })
+    try {
+      const {data: {data}} = await axios('/api/paper', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        data: {
+          friendName: nameVal,
+          friendBirth: birthVal
+        }
+      });
+      Router.push(`/paper/${data.uid}`);
+    } catch (err) {
+      window.alert('오류 발생');
+    }
   }
 
   return <Layout>
     <div className="w-11/12 md:w-6/12 lg:w-4/12 mx-auto">
-      <form action="/api/paper" method="POST" className="grid grid-cols-1 gap-4">
+      <form className="grid grid-cols-1 gap-4">
         <input type="text" name="friendName" id="friendName" maxLength={4} 
           className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
           placeholder="친구 이름" 

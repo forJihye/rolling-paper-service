@@ -34,6 +34,7 @@ export default NextAuth({
     deleteDoc,
     runTransaction
   }),
+  secret: process.env.SESSION_SECRET,
   callbacks: {
     async session({ session, user, token }) {
       return {
@@ -47,6 +48,5 @@ export default NextAuth({
       }
       return token;
     }
-  },
-  secret: process.env.SESSION_SECRET
+  }
 })
