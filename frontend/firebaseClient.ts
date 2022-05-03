@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getStorage } from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
+
 
 export const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
@@ -14,9 +14,8 @@ export const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const storage = getStorage(app);
 
-export { app, db, storage };
+export { app, db };
 // const secret = process.env.NEXTAUTH_SECRET
 // export default async (req: NextApiRequest, res: NextApiResponse) => {
 //   const token = await getToken({ req, secret })

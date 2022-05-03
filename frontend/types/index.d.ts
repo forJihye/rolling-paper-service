@@ -7,11 +7,16 @@ type User = {
 }
 
 type PaperData = {
-  userId: number;
+  uid: string;
+  userName: number;
   friendName: string;
   friendBirth: string;
-  uid: string;
   completedUid: string;
   isCompleted: boolean;
-  posts: any[];
+  posts: PostData[];
+}
+
+type PostData = {
+  name: string;
+  message: string;
 }

@@ -5,13 +5,14 @@ import React from "react";
 
 export default function Layout({title = '', children, ...props}: {title?: string; children: React.ReactNode}) {
   const session = useSession();
+  console.log('session', session)
   return <div {...props} className="w-full min-h-screen flex flex-col bg-white">
     <Head>
       <title>롤링 페이터 {title}</title>
     </Head>
     <div className="w-full flex-auto">
       <nav className="bg-white py-3 px-4">
-        <div className="w-3/6 mx-auto flex justify-between items-center">
+        <div className="w-11/12 sm:w-9/12 md:w-7/12 lg:w-5/12 mx-auto flex justify-between items-center">
           <div>LOGO</div>
           <div className="ml-auto" id="navbar-collapse">
             <Link href='/'>
@@ -37,7 +38,7 @@ export default function Layout({title = '', children, ...props}: {title?: string
           </div>
         </div>
       </nav>
-      <main className="w-3/6 mx-auto flex-auto py-20">
+      <main className="w-11/12 sm:w-9/12 md:w-6/12 lg:w-5/12 mx-auto flex-auto py-20">
         {children}
       </main>
     </div>
