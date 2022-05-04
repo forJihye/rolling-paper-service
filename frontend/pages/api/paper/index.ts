@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react';
-import { collection, deleteDoc, doc, getDoc, getDocs, query, setDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, runTransaction, setDoc } from 'firebase/firestore';
 import { db } from 'firebaseClient';
 import { v4 as uuid } from 'uuid';
 
@@ -12,37 +12,36 @@ export default async function handler( req: NextApiRequest, res: NextApiResponse
     return res.status(401).json({ error: 'Permission Denied' });
   } else {
     if (req.method === "PUT") { // 롤링페이퍼 생성
-      const paperData = {
-        userName: user.name,
-        friendName: req.body.friendName,
-        friendBirth: req.body.friendBirth,
-        completedUid: null,
-        isCompleted: false,
-        posts: [],
-      };
-      // papers/CBjzdw4Dla2mLnzfllTn/paper/697da934-b80c-4ce3-b7cc-ec17228f52e6
-      const uid = uuid();
-      const paperRef = collection(db, `papers/${user.id}/paper`);
-      setDoc(doc(paperRef, uid), paperData);
-      return res.status(200).json({data: {
-        ...paperData,
-        uid
-      }});
-    } else if (req.method === 'GET') { // 유저가 만든 모든 롤링페이퍼 가져오기
-      const papersRef = collection(db, `papers/${user.id}/paper`);
-      const paperDocs = await getDocs(query(papersRef));
-      if (paperDocs.empty) {
-        return res.status(401).json({data: null});
-      } else {
-        const data: any = [];
-        paperDocs.forEach(doc => {
-          data.push({
-            ...doc.data(),
-            uid: doc.id
-          });
+      try {
+        const userRef = doc(db, `users/${user.id}`);
+        const uid = uuid();
+        const paperData = {
+          userId: user.id,
+          userName: user.name,
+          friendName: req.body.friendName,
+          friendBirth: req.body.friendBirth,
+          completedUid: null,
+          isCompleted: false,
+          posts: [],
+        };
+        
+        await runTransaction(db, async (transaction) => {
+          const userDoc = await transaction.get(userRef);
+          if (!userDoc.exists()) throw "Document does not exist!"; // 존재하지 않는 문서
+          const userPapers = userDoc.data().papers;
+          if (!userPapers) transaction.update(userRef, {papers: [uid]});
+          else transaction.update(userRef, {papers: [ ...userPapers, uid ]});
         });
-        return res.json({data});
+        
+        setDoc(doc(db, `papers/${uid}`), paperData);
+        return res.status(200).json({data: {
+          ...paperData,
+          uid
+        }});
+      } catch (e) {
+        return res.status(401).json({data: null});
       }
-    } 
+      
+    }
   } 
 }

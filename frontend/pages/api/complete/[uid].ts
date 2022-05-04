@@ -1,16 +1,15 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { collection, doc, getDoc, getDocs, query, runTransaction, where } from "firebase/firestore";
-import { app, db } from "firebaseClient";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "firebaseClient";
 
-
-export default async function handler( req: NextApiRequest, res: NextApiResponse<any> ) {
+export default async function handler( req: NextApiRequest, res: NextApiResponse<{paper: null | CompletedPaper}> ) {
   if (req.method === 'GET') {
     const docRef = doc(db, `complete/${req.query.uid}`);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      return res.status(200).json({data: docSnap.data()});
+      return res.status(200).json({paper: docSnap.data() as CompletedPaper});
     } else {
-      return res.status(401).json({data: null});
+      return res.status(401).json({paper: null});
     }
   }
 }

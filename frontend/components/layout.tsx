@@ -25,12 +25,17 @@ export default function Layout({title = '', children, ...props}: {title?: string
             ? <Link href='/login'>
               <a className="p-2 lg:px-4 md:mx-2 text-indigo-600">로그인 하기</a>
             </Link>
-            : <a onClick={(ev) => {
+            : <>
+              <Link href='/mypage'>
+                <a className="p-2 lg:px-4 md:mx-2 text-indigo-600">Mypage</a>
+              </Link>
+              <a onClick={(ev) => {
                   ev.preventDefault();
                   signOut({callbackUrl: '/'});
                 }} 
                 className="p-2 lg:px-4 md:mx-2 text-indigo-600 text-center rounded first:border border-solid border-indigo-600 hover:bg-indigo-600 hover:text-white transition-colors duration-300"
               >로그아웃</a>
+            </>
             }
           </div>
         </div>

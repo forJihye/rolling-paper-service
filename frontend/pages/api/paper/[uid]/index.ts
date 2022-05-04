@@ -1,44 +1,37 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { collection, deleteDoc, doc, runTransaction, setDoc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, runTransaction } from "firebase/firestore";
 import { db } from "firebaseClient";
-import { authCatch } from "lib/authCatch";
-import { v4 as uuid } from 'uuid';
+import { getSession } from "next-auth/react";
 
-// FIXME: 브라우저 로컬 스토리지 데이터 저장 필요함. (브라우저마다 메시지 1개만 등록 가능)
 export default async function handler( req: NextApiRequest, res: NextApiResponse<any> ) {
-  return authCatch(async (req, res, user) => {
-    if (req.method === "POST") { // 롤링페이퍼 완성하기
-      const paperRef = doc(db, `papers/${user.id}/paper/${req.query.uid}`);
+  if (req.method === "GET") { // 롤링페이퍼 데이터 가져오기
+    const paperDocRef = doc(db, `papers/${req.query.uid}`);
+    const paperDoc = await getDoc(paperDocRef);
+    const paperData = paperDoc.data() as PaperData;
+    return res.json({paper: paperData}); 
+  } 
+  else if (req.method === 'DELETE') { // 롤링페이퍼 삭제
+    const session = await getSession({req});
+    const user = session?.user as User;
+    if (!session) {
+      return res.status(401).json({ error: 'Permission Denied' });
+    } else {
+      const userDocRef = doc(db, `users/${user.id}`);
       try {
         await runTransaction(db, async (transaction) => {
-          const paperDoc = await transaction.get(paperRef);
-          if (!paperDoc.exists()) { // 존재하지 않는 문서
-            throw "Document does not exist!";
-          }
-          const paperData = paperDoc.data();
-          const completedUid = uuid();
-          transaction.update(paperRef, {
-            completedUid,
-            isCompleted: true
+          await deleteDoc(doc(db, `papers/${req.query.uid}`));
+          const userDoc = await transaction.get(userDocRef);
+          if (!userDoc.exists()) throw "Document does not exist!";
+          const userPapers = userDoc.data().papers;
+          const updateUserPapers = userPapers.filter((paperUid: string) => paperUid !== req.query.uid);
+          transaction.update(userDocRef, {
+            papers: updateUserPapers
           });
-          const completeRef = collection(db, `complete`);
-          setDoc(doc(completeRef, completedUid), {
-            posts: [...paperData.posts],
-            isCompleted: true
-          });
-          return res.json({completedUid});
-        })
-      } catch (e) {
-        return res.status(401).json({data: null});
-      }
-    } else if (req.method === "DELETE") {
-      try {
-        const uid = req.query.uid;
-        await deleteDoc(doc(db, `papers/${user.id}/paper/${uid}`));
+        });
         return res.status(200).json({data: true});
       } catch(e) {
         return res.status(401).json({data: false});
       }
     }
-  })(req, res);
+  }
 }

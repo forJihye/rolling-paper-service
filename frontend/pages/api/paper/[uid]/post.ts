@@ -6,8 +6,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 // FIXME: 브라우저 로컬 스토리지 데이터 저장 필요함. (브라우저마다 메시지 1개만 등록 가능)
 export default async function handler( req: NextApiRequest, res: NextApiResponse<any> ) {
   return authCatch(async (req, res, user) => {
-    if (req.method === "POST") {
-      const paperRef = doc(db, `papers/${user.id}/paper/${req.query.uid}`);
+    if (req.method === "POST") { // 메시지 등록
+      const paperRef = doc(db, `papers/${req.query.uid}`);
       try {
         await runTransaction(db, async (transaction) => {
           const paperDoc = await transaction.get(paperRef);

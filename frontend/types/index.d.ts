@@ -1,13 +1,15 @@
 type User = {
-  image: string;
+  id: string;
   name: string;
+  image: string;
   emailVerified: null|string;
   email: string;
-  id: string;
+  papers?: string[]
 }
 
 type PaperData = {
   uid: string;
+  userId: string;
   userName: number;
   friendName: string;
   friendBirth: string;
@@ -21,7 +23,7 @@ type PostData = {
   message: string;
 }
 
-type PostsData = {
+type CompletedPaper = {
   posts: PostData[];
   isCompleted: boolean;
 }
