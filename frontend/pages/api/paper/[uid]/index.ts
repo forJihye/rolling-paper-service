@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { deleteDoc, doc, runTransaction } from "firebase/firestore";
+import { collection, deleteDoc, doc, runTransaction, setDoc } from "firebase/firestore";
 import { db } from "firebaseClient";
 import { authCatch } from "lib/authCatch";
 import { v4 as uuid } from 'uuid';
@@ -15,15 +15,21 @@ export default async function handler( req: NextApiRequest, res: NextApiResponse
           if (!paperDoc.exists()) { // 존재하지 않는 문서
             throw "Document does not exist!";
           }
+          const paperData = paperDoc.data();
           const completedUid = uuid();
           transaction.update(paperRef, {
             completedUid,
             isCompleted: true
           });
+          const completeRef = collection(db, `complete`);
+          setDoc(doc(completeRef, completedUid), {
+            posts: [...paperData.posts],
+            isCompleted: true
+          });
           return res.json({completedUid});
         })
       } catch (e) {
-        return res.status(401).json({data: e});
+        return res.status(401).json({data: null});
       }
     } else if (req.method === "DELETE") {
       try {

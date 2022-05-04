@@ -21,18 +21,15 @@ export default function Layout({title = '', children, ...props}: {title?: string
             {session.data && <Link href='/main'>
               <a className="p-2 lg:px-4 md:mx-2 text-indigo-600">Main</a>
             </Link>}
-            {!session.data
-            ? <a onClick={(ev) => {
-                ev.preventDefault();
-                signIn('google', {callbackUrl: '/main'});
-              }} 
-              className="p-2 lg:px-4 md:mx-2 text-indigo-600 text-center rounded first:border border-solid border-indigo-600 hover:bg-indigo-600 hover:text-white transition-colors duration-300"
-              >로그인</a> 
+            {!session.data 
+            ? <Link href='/login'>
+              <a className="p-2 lg:px-4 md:mx-2 text-indigo-600">로그인 하기</a>
+            </Link>
             : <a onClick={(ev) => {
-                ev.preventDefault();
-                signOut({callbackUrl: '/'});
-              }} 
-              className="p-2 lg:px-4 md:mx-2 text-indigo-600 text-center rounded first:border border-solid border-indigo-600 hover:bg-indigo-600 hover:text-white transition-colors duration-300"
+                  ev.preventDefault();
+                  signOut({callbackUrl: '/'});
+                }} 
+                className="p-2 lg:px-4 md:mx-2 text-indigo-600 text-center rounded first:border border-solid border-indigo-600 hover:bg-indigo-600 hover:text-white transition-colors duration-300"
               >로그아웃</a>
             }
           </div>

@@ -20,3 +20,8 @@ type PostData = {
   name: string;
   message: string;
 }
+
+type PostsData = {
+  posts: PostData[];
+  isCompleted: boolean;
+}

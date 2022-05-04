@@ -4,15 +4,21 @@ import { useRouter } from "next/router";
 import { fetcher } from "lib/fetcher";
 import Layout from "@/components/layout";
 
-// http://localhost:3000/paper/completed/2eefa54d-c2a8-4810-96fe-83df83794ef2
+// 예시링크: http://localhost:3000/complete/acaf971b-9d43-42f8-ac60-5ccda1a33202
 const PaperDetail: NextPage<{}> = () => {
   const router = useRouter();
-  const {data, error} = useSWR<any>(`/api/completed/${router.query.uid}`, fetcher);
+  const {data, error} = useSWR<{data: PostsData}>(`/api/complete/${router.query.uid}`, fetcher);
   
   if (error) return <div>401</div>
   if (!data) return <div>loading...</div>
   return <Layout>
     <h1>완성 롤링페이퍼</h1>
+    {data.data.posts.map((post, i) => {
+      return <div key={`post-${i}`}>
+        <div>{post.name}</div>
+        <div>{post.message}</div>
+      </div>
+    })}
   </Layout>
 }
 

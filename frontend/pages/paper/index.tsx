@@ -54,7 +54,7 @@ const PaperCreate: NextPage = () => {
       const {data} = await axios.post(`/api/paper/${uid}`);
       const completedUid = data.completedUid;
       Router.push({
-        pathname: '/paper/completed/[uid]',
+        pathname: '/complete/[uid]',
         query: { 
           uid: completedUid
         },
@@ -70,7 +70,7 @@ const PaperCreate: NextPage = () => {
     <div className="w-full lg:w-10/12 mx-auto mb-10">
       <p className="text-xl">내 친구 롤링페이퍼</p>
       <ul>
-        {data.data.map((paper, i) => {
+        {data.data ? data.data.map((paper, i) => {
           return <li key={`paper-${i}`} className='py-5 border-t border-gray-300 border-solid text-sm'>
             <div>친구 이름: {paper.friendName}</div>
             <div>친구 생일: {paper.friendBirth}</div>
@@ -89,7 +89,7 @@ const PaperCreate: NextPage = () => {
                 className='inline-block py-2 px-4 text-sm text-center text-white bg-lime-500 rounded-md shadow-md'
               >페이퍼 완성</button> 
             : <Link href={{
-                pathname: `paper/completed/[uid]`,
+                pathname: `complete/[uid]`,
                 query: { 
                   uid: paper.completedUid 
                 },
@@ -98,7 +98,7 @@ const PaperCreate: NextPage = () => {
               </Link>
             }
           </li>
-        })}
+        }) : <div>만든 롤링페이퍼 없음.</div>}
       </ul>
     </div>
     <div className="w-full lg:w-10/12 mx-auto">
