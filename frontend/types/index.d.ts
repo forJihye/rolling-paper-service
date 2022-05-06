@@ -19,6 +19,7 @@ type PaperData = {
 }
 
 type PostData = {
+  key: number;
   name: string;
   message: string;
 }

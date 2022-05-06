@@ -1,11 +1,12 @@
-import { signIn, signOut, useSession } from "next-auth/react";
+import { GetServerSideProps } from "next";
+import { getSession, signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 
 export default function Layout({title = '', children, ...props}: {title?: string; children: React.ReactNode}) {
-  const session = useSession();
-  console.log('session', session)
+  const { data: session } = useSession();
+  
   return <div {...props} className="w-full min-h-screen flex flex-col bg-white">
     <Head>
       <title>롤링 페이터 {title}</title>
@@ -18,10 +19,7 @@ export default function Layout({title = '', children, ...props}: {title?: string
             <Link href='/'>
               <a className="p-2 lg:px-4 md:mx-2 text-indigo-600">Home</a>
             </Link>
-            {session.data && <Link href='/main'>
-              <a className="p-2 lg:px-4 md:mx-2 text-indigo-600">Main</a>
-            </Link>}
-            {!session.data 
+            {!session 
             ? <Link href='/login'>
               <a className="p-2 lg:px-4 md:mx-2 text-indigo-600">로그인 하기</a>
             </Link>

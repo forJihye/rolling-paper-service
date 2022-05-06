@@ -9,5 +9,4 @@ function App({ Component, pageProps: {session, ...pageProps} }: AppProps) {
   </SessionProvider>
 }
 
-
 export default App

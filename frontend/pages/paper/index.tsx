@@ -15,15 +15,9 @@ const PaperCreate: NextPage = () => {
     const birthVal = birthRef.current?.value as string;
     if (!nameVal.length || !birthVal.length) return window.alert('잘못된 입력');
     try {
-      const {data: {data}} = await axios('/api/paper', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        data: {
-          friendName: nameVal,
-          friendBirth: birthVal
-        }
+      const {data: {data}} = await axios.put('/api/paper', {
+        friendName: nameVal,
+        friendBirth: birthVal
       });
       Router.push(`/paper/${data.uid}`);
     } catch (err) {
