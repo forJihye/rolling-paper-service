@@ -17,7 +17,7 @@ const PaperMain: NextPage<{}> = () => {
   
   const onPostSubmit = async (ev: MouseEvent) => { // 롤링페이퍼 메시지 등록
     ev.preventDefault();
-    await axios.post(`/api/paper/${router.query.uid}/post`, {
+    await axios.post(`/api/paper/${router.query.uid}/message`, {
       name: nameRef.current?.value,
       message: contentRef.current?.value
     });
