@@ -28,7 +28,7 @@ const Mypage: NextPage<{}> = ({}) => {
     const confirm = window.confirm('완성 하시겠습니까? \n완성된 롤링페이퍼에 더 이상 메시지를 남길 수 없습니다.');
     if (!confirm) return;
     try {
-      const {data} = await axios.post(`/api/paper/complete`, { uid });
+      const {data} = await axios.post(`/api/complete`, { uid });
       const completedUid = data.completedUid;
       Router.push({
         pathname: '/complete/[uid]',

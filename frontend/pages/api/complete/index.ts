@@ -8,8 +8,8 @@ import { v4 as uuid } from 'uuid';
 export default async function handler( req: NextApiRequest, res: NextApiResponse<any> ) {
   return authCatch(async (req, res, user) => {
     if (req.method === "POST") { // 롤링페이퍼 완성하기
-      const paperDocRef = doc(db, `papers/${req.body.uid}`);
       try {
+        const paperDocRef = doc(db, `papers/${req.body.uid}`);
         await runTransaction(db, async (transaction) => {
           const paperDoc = await transaction.get(paperDocRef);
           if (!paperDoc.exists()) { // 존재하지 않는 문서
