@@ -7,25 +7,23 @@ import { db } from 'firebaseClient';
 export default async function handler( req: NextApiRequest, res: NextApiResponse<any> ) {
   const session = await getSession({req});
   const user = session?.user as User;
-  if (!session) {
-    return res.status(401).json({ error: 'Permission Denied' });
-  } else {
+  // if (!session) {
+  //   return res.status(401).json({ error: 'Permission Denied' });
+  // } else {
     //FIXME: Next page 렌더링 늦음
     if (req.method === 'GET') { // 유저가 만든 모든 롤링페이퍼 가져오기
       try {
-        const data = await runTransaction(db, async (transaction) => {
-          const userDocRef = doc(db, `users/${user.id}`);
-          const userDoc = await getDoc(userDocRef);
-          if (!userDoc.exists()) throw "Document does not exist!";
-          const userPapers = userDoc.data().papers;
-          return userPapers.map(async (paperUid: string) => {
-            const paperDocRef = doc(db, "papers", paperUid);
-            const paperDoc = await transaction.get(paperDocRef);
-            return {
-              ...paperDoc.data(),
-              uid: paperUid
-            };
-          })
+        const userDocRef = doc(db, `users/${user.id}`);
+        const userDoc = await getDoc(userDocRef);
+        if (!userDoc.exists()) throw "Document does not exist!";
+        const userPapers = userDoc.data().papers;
+        const data = userPapers.map(async (paperUid: string) => {
+          const paperDocRef = doc(db, `papers/${paperUid}`);
+          const paperDoc = await getDoc(paperDocRef);
+          return {
+            ...paperDoc.data(),
+            uid: paperUid
+          };
         })
         const result = await Promise.all(data);
         return res.status(200).json({papers: result});
@@ -52,5 +50,5 @@ export default async function handler( req: NextApiRequest, res: NextApiResponse
       //   return res.status(401).json({ error: 'No such document!' });
       // }
     } 
-  } 
+  // } 
 }

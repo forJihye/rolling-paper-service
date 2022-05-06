@@ -1,9 +1,8 @@
-import { GetServerSideProps, NextPage } from 'next';
-import { getSession, useSession } from 'next-auth/react';
+import { NextPage } from 'next';
 import Link from 'next/link';
 import Layout from '../components/layout';
 
-const Home: NextPage<{session: any}> = ({session}) => {
+const Home: NextPage<{}> = () => {
   
   return (
     <Layout>    

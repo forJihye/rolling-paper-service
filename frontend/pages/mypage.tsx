@@ -1,15 +1,15 @@
 import Layout from "@/components/layout"
 import axios from "axios";
 import { fetcher } from "lib/fetcher";
-import { NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import Link from "next/link";
 import Router from "next/router";
 import { MouseEvent } from "react";
 import useSWR from "swr";
 
-const Mypage: NextPage<{}> = ({}) => {
-  const {data, error} = useSWR<{papers: PaperData[]}>('api/user/paper', fetcher);
-
+const Mypage: NextPage<{papers: PaperData[]}> = ({papers}) => {
+  console.log(papers)
+  // const {data, error} = useSWR<{papers: PaperData[]}>('api/user/paper', fetcher);
   // 롤링 페이퍼 삭제
   const onPaperDelete = (uid: string) => async (ev: MouseEvent) => {
     ev.preventDefault();
@@ -41,13 +41,11 @@ const Mypage: NextPage<{}> = ({}) => {
     }
   }
 
-  if (error) return <Layout>401</Layout>
-  if (!data) return <Layout>loading...</Layout>
   return <Layout>
     <div className="w-full lg:w-10/12 mx-auto mb-10">
-      <p className="text-xl">내 친구 롤링페이퍼</p>
+      <p className="text-xl">내가 만든 롤링페이퍼</p>
       <ul>
-        {data.papers ? data.papers.map((paper, i) => {
+        {/* {data.papers ? data.papers.map((paper, i) => {
           return <li key={`paper-${i}`} className='py-5 border-t border-gray-300 border-solid text-sm'>
             <div>친구 이름: {paper.friendName}</div>
             <div>친구 생일: {paper.friendBirth}</div>
@@ -77,10 +75,20 @@ const Mypage: NextPage<{}> = ({}) => {
               </Link>
             }
           </li>
-        }) : <div>만든 롤링페이퍼 없음.</div>}
+        }) : <div>만든 롤링페이퍼 없음.</div>} */}
       </ul>
     </div>
   </Layout>
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/user/paper`);
+  const data: {papers: PaperData[]} = await res.json();
+  return {
+    props: {
+      papers: data
+    }
+  }
 }
 
 export default Mypage;

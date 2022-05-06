@@ -97,14 +97,14 @@ const PaperMain: NextPage<{paper: PaperData;}> = ({paper}) => {
     }
   }
 
-  return <Layout>
+  return <Layout title="메시지 남기기">
     <div className="w-full lg:w-10/12 mx-auto">
+      <div>{paper.friendName}에게 메시지 남기기 ! (만든 친구: {paper.userName})</div>
       {!paper.isCompleted ? <div>{postFormRender(postKey as (number|null), targetPost)}</div> : <div>
         <Link href={`/complete/${paper.completedUid}`}>
           <a>완성 된 롤링페이퍼 보기</a>
         </Link>
       </div>}
-      <div>만든 사람: {paper.userName}</div>
     </div>
   </Layout>
 }

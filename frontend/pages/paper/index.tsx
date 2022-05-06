@@ -1,27 +1,34 @@
 import Layout from "@/components/layout";
 import axios from "axios";
 import Router from 'next/router';
-import { NextPage } from "next";
-import { MouseEvent, useRef } from "react";
+import { GetServerSideProps, NextPage } from "next";
+import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "react";
+import { getSession, useSession } from "next-auth/react";
 
 const PaperCreate: NextPage = () => {
-  const nameRef = useRef<HTMLInputElement>(null);
-  const birthRef = useRef<HTMLInputElement>(null);
+  const { data: session } = useSession();  
+  const [state, setState] = useState<{name: string; birthDate: string;}>({name: '', birthDate: ''});
+
+  useEffect(() => {
+    if (!session) Router.push('/login');
+  }, []);
+
+  const changeHandler = (ev: ChangeEvent<HTMLInputElement>) => {
+    setState(state => ({...state, [ev.target.name]: ev.target.value}));
+  }
 
   // 롤링 페이퍼 생성
   const onPaperSubmit = async (ev: MouseEvent) => {
     ev.preventDefault();
-    const nameVal = nameRef.current?.value as string;
-    const birthVal = birthRef.current?.value as string;
-    if (!nameVal.length || !birthVal.length) return window.alert('잘못된 입력');
+    if (!state.name.length || !state.birthDate.length) return;
     try {
       const {data: {data}} = await axios.put('/api/paper', {
-        friendName: nameVal,
-        friendBirth: birthVal
+        name: state.name,
+        birthDate: state.birthDate
       });
       Router.push(`/paper/${data.uid}`);
-    } catch (err) {
-      window.alert('오류 발생');
+    } catch (err: any) {
+      throw Error(err)
     }
   }
 
@@ -29,17 +36,17 @@ const PaperCreate: NextPage = () => {
     <div className="w-full lg:w-10/12 mx-auto">
       <p className="text-xl">내 친구 롤링페이퍼 만들기</p>
       <form className="grid grid-cols-1 gap-4">
-        <input type="text" name="friendName" id="friendName" maxLength={4} 
+        <input type="text" name="name" id="name" maxLength={4} 
           className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
           placeholder="친구 이름" 
-          ref={nameRef}
-          defaultValue="홍길동"
+          value={state.name}
+          onChange={changeHandler}
         />
-        <input type="text" name="friendBirth" id="friendBirth" maxLength={4} 
+        <input type="text" name="birthDate" id="birthDate" maxLength={4} 
           className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
           placeholder="친구 생일 (ex: 0605)" 
-          ref={birthRef}
-          defaultValue="0706"
+          value={state.birthDate}
+          onChange={changeHandler}
         />
         <button
           onClick={onPaperSubmit}
@@ -48,6 +55,14 @@ const PaperCreate: NextPage = () => {
       </form> 
     </div>
   </Layout>
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  return {
+    props: {
+      session: await getSession(context)
+    }
+  }
 }
 
 export default PaperCreate;
