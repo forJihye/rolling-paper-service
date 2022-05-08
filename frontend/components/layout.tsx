@@ -6,7 +6,6 @@ import React from "react";
 
 export default function Layout({title = '', children, ...props}: {title?: string; children: React.ReactNode}) {
   const { data: session } = useSession();
-  
   return <div {...props} className="w-full min-h-screen flex flex-col bg-white">
     <Head>
       <title>롤링 페이터 {title}</title>

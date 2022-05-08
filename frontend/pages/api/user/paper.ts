@@ -7,10 +7,9 @@ import { db } from 'firebaseClient';
 export default async function handler( req: NextApiRequest, res: NextApiResponse<any> ) {
   const session = await getSession({req});
   const user = session?.user as User;
-  // if (!session) {
-  //   return res.status(401).json({ error: 'Permission Denied' });
-  // } else {
-    //FIXME: Next page 렌더링 늦음
+  if (!session) {
+    return res.status(401).json({ error: 'Permission Denied' });
+  } else {
     if (req.method === 'GET') { // 유저가 만든 모든 롤링페이퍼 가져오기
       try {
         const userDocRef = doc(db, `users/${user.id}`);
@@ -30,25 +29,6 @@ export default async function handler( req: NextApiRequest, res: NextApiResponse
       } catch (e) {
         return res.status(401).json({papers: null});
       }
-
-      // const userDocRef = doc(db, `users/${user.id}`);
-      // const userSnap = await getDoc(userDocRef);
-      // if (userSnap.exists()) {
-      //   const {papers} = userSnap.data();
-      //   const userPapersData = papers.map(async (paperUid: string) => {
-      //     const paperRef = doc(db, "papers", paperUid);
-      //     const paperSnap = await getDoc(paperRef);
-      //     const data = paperSnap.data() as PaperData;
-      //     return {
-      //       ...data,
-      //       uid: paperUid
-      //     }
-      //   });
-      //   const paperData = await Promise.all(userPapersData);
-      //   return res.json({papers: paperData});
-      // } else {
-      //   return res.status(401).json({ error: 'No such document!' });
-      // }
-    } 
-  // } 
+    }
+  } 
 }

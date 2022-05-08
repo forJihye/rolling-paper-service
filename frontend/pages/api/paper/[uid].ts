@@ -16,17 +16,15 @@ export default async function handler( req: NextApiRequest, res: NextApiResponse
     if (!session) {
       return res.status(401).json({ error: 'Permission Denied' });
     } else {
-      const userDocRef = doc(db, `users/${user.id}`);
       try {
-        await runTransaction(db, async (transaction) => {
-          await deleteDoc(doc(db, `papers/${req.query.uid}`));
-          const userDoc = await transaction.get(userDocRef);
-          if (!userDoc.exists()) throw "Document does not exist!";
-          const userPapers = userDoc.data().papers;
-          const updateUserPapers = userPapers.filter((paperUid: string) => paperUid !== req.query.uid);
-          transaction.update(userDocRef, {
-            papers: updateUserPapers
-          });
+        const userDocRef = doc(db, `users/${user.id}`);
+        await deleteDoc(doc(db, `papers/${req.query.uid}`));
+        const userDoc = await getDoc(userDocRef);
+        if (!userDoc.exists()) throw "Document does not exist!";
+        const userPapers = userDoc.data().papers;
+        const updateUserPapers = userPapers.filter((paperUid: string) => paperUid !== req.query.uid);
+        updateDoc(userDocRef, {
+          papers: updateUserPapers
         });
         return res.status(200).json({data: true});
       } catch(e) {
