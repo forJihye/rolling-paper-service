@@ -4,7 +4,6 @@ import { db } from "firebaseClient";
 import { authCatch } from "lib/authCatch";
 import { v4 as uuid } from 'uuid';
 
-// FIXME: 브라우저 로컬 스토리지 데이터 저장 필요함. (브라우저마다 메시지 1개만 등록 가능)
 export default async function handler( req: NextApiRequest, res: NextApiResponse<any> ) {
   return authCatch(async (req, res, user) => {
     if (req.method === "POST") { // 롤링페이퍼 완성하기
@@ -22,7 +21,8 @@ export default async function handler( req: NextApiRequest, res: NextApiResponse
         });
         // 완성 롤릴페이퍼 컬렉션 생성
         const completeRef = collection(db, `complete`);
-        setDoc(doc(completeRef, completedUid), {
+        const completeDoc = doc(completeRef, completedUid);
+        setDoc(completeDoc, {
           posts: [...paperData.posts],
           isCompleted: true
         });

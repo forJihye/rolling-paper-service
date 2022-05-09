@@ -1,18 +1,12 @@
-import useSWR from "swr";
-import { NextPage } from "next";
-import { useRouter } from "next/router";
-import { fetcher } from "lib/fetcher";
+import { GetServerSideProps, NextPage } from "next";
 import Layout from "@/components/layout";
 
-const PaperDetail: NextPage<{}> = () => {
-  const router = useRouter();
-  const {data, error} = useSWR<{paper: CompletedPaper}>(`/api/complete/${router.query.uid}`, fetcher);
-  
-  if (error) return <div>401</div>
-  if (!data) return <div>loading...</div>
+const PaperDetail: NextPage<{data: CompletedPaper}> = ({data}) => {
   return <Layout>
     <h1>완성 롤링페이퍼</h1>
-    {data.paper.posts.map((post, i) => {
+    {!data.posts.length 
+    ? <div>남겨진 메시지 없음.</div>
+    : data.posts.map((post, i) => {
       return <div key={`post-${i}`}>
         <div>{post.name}</div>
         <div>{post.message}</div>
@@ -21,4 +15,17 @@ const PaperDetail: NextPage<{}> = () => {
   </Layout>
 }
 
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/complete/${context.query.uid}`, {
+    headers: {
+      cookie: context.req.headers.cookie || "",
+    }
+  });
+  const {data} = await res.json();
+  return {
+    props: {
+      data: data
+    }
+  }
+}
 export default PaperDetail;
