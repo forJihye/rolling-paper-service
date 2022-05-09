@@ -23,6 +23,12 @@ const PaperCreate: NextPage = () => {
     ev.preventDefault();
     if (!state.name.length || !state.year.length || !state.month.length || !state.day.length) return;
     try {
+      const t = new Date(`${state.year}-${state.month}-${state.day}`);
+      if (t.toString() === 'Invalid Date') {
+        window.alert('잘못된 날짜 형식');
+        setState(state => ({...state, year: '', month: '', day: ''}));
+        return;
+      }
       const {data: {data}} = await axios.put('/api/paper', {
         name: state.name,
         birthDate: new Date(`${state.year}-${state.month}-${state.day}`)
