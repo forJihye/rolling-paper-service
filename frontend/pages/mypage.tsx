@@ -1,15 +1,17 @@
-import Layout from "@/components/layout"
-import axios from "axios";
-import { fetcher } from "lib/fetcher";
 import { GetServerSideProps, NextPage } from "next";
-import { getSession } from "next-auth/react";
+import { MouseEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import Router from "next/router";
-import { MouseEvent } from "react";
-import useSWR from "swr";
+import axios from "axios";
+import Layout from "@/components/layout"
 
 const Mypage: NextPage<{papers: PaperData[]}> = ({papers}) => {
-  const {data, error} = useSWR<{papers: PaperData[]}>('api/user/paper', fetcher);
+  const [state, setState] = useState<PaperData[]>([]);
+
+  useEffect(() => {
+    setState(papers);
+  }, []);
+
   // 롤링 페이퍼 삭제
   const onPaperDelete = (uid: string) => async (ev: MouseEvent) => {
     ev.preventDefault();
@@ -17,6 +19,7 @@ const Mypage: NextPage<{papers: PaperData[]}> = ({papers}) => {
     if (!confirm) return;
     try {
       await axios.delete(`/api/paper/${uid}`);
+      Router.reload();
     } catch (e: any) {
       throw Error(e)
     }
@@ -45,7 +48,9 @@ const Mypage: NextPage<{papers: PaperData[]}> = ({papers}) => {
     <div className="w-full lg:w-10/12 mx-auto mb-10">
       <p className="text-xl">내가 만든 롤링페이퍼</p>
       <ul>
-        {data?.papers ? data.papers.map((paper, i) => {
+        {!state.length 
+        ? <div>만든 롤링페이퍼 없음.</div> 
+        : state.map((paper, i) => {
           return <li key={`paper-${i}`} className='py-5 border-t border-gray-300 border-solid text-sm'>
             <div>친구 이름: {paper.friendName}</div>
             <div>친구 생일: {paper.friendBirth}</div>
@@ -75,10 +80,24 @@ const Mypage: NextPage<{papers: PaperData[]}> = ({papers}) => {
               </Link>
             }
           </li>
-        }) : <div>만든 롤링페이퍼 없음.</div>}
+        })}
       </ul>
     </div>
   </Layout>
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/user/paper`, {
+    headers: {
+      cookie: context.req.headers.cookie || "",
+    },
+  });
+  const data: {papers: PaperData[]} = await res.json();
+  return {
+    props: {
+      papers: data.papers
+    }
+  }
 }
 
 export default Mypage;

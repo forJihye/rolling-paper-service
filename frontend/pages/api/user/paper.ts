@@ -29,6 +29,6 @@ export default async function handler( req: NextApiRequest, res: NextApiResponse
       } catch (e) {
         return res.status(401).json({papers: null});
       }
-    }
+    } 
   } 
 }
