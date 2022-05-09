@@ -11,6 +11,7 @@
   "dependencies": {
     "@next-auth/firebase-adapter": "^0.1.2-pr.183-76202b42.8",
     "axios": "^0.27.2",
+    "date-fns": "^2.28.0",
     "firebase": "^9.7.0",
     "firebase-admin": "^10.1.0",
     "next": "12.1.4",

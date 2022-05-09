@@ -2,8 +2,7 @@ import { NextPage } from 'next';
 import Link from 'next/link';
 import Layout from '../components/layout';
 
-const Home: NextPage<{}> = () => {
-  
+const Home: NextPage = () => {
   return (
     <Layout>    
       <h1>Wellcom</h1>

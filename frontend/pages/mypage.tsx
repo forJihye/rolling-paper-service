@@ -3,7 +3,8 @@ import { MouseEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import Router from "next/router";
 import axios from "axios";
-import Layout from "@/components/layout"
+import Layout from "@/components/layout";
+import format from "date-fns/format";
 
 const Mypage: NextPage<{papers: PaperData[]}> = ({papers}) => {
   const [state, setState] = useState<PaperData[]>([]);
@@ -53,7 +54,7 @@ const Mypage: NextPage<{papers: PaperData[]}> = ({papers}) => {
         : state.map((paper, i) => {
           return <li key={`paper-${i}`} className='py-5 border-t border-gray-300 border-solid text-sm'>
             <div>친구 이름: {paper.friendName}</div>
-            <div>친구 생일: {paper.friendBirth}</div>
+            <div>친구 생일: {paper.friendBirth && format(new Date(paper.friendBirth), 'yyy-MM-dd')}</div>
             <div>내 이름: {paper.userName}</div>
             <div style={{fontSize: 13}}>{paper.uid}</div>
             <Link href={`paper/${paper.uid}`}>
