@@ -1,11 +1,15 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { collection, collectionGroup, deleteDoc, doc, getDoc, getDocs, query, runTransaction, setDoc, updateDoc, where } from "firebase/firestore";
 import { db } from "firebaseClient";
-import { authCatch } from "lib/authCatch";
 import { v4 as uuid } from 'uuid';
+import { getSession } from "next-auth/react";
 
 export default async function handler( req: NextApiRequest, res: NextApiResponse<any> ) {
-  return authCatch(async (req, res, user) => {
+  const session = await getSession({req});
+  const user = session?.user as User;
+  if (!session) {
+    return res.status(401).json({ error: 'Permission Denied' });
+  } else {
     if (req.method === "POST") { // 롤링페이퍼 완성하기
       try {
         const paperDocRef = doc(db, `papers/${req.body.uid}`);
@@ -34,5 +38,5 @@ export default async function handler( req: NextApiRequest, res: NextApiResponse
         return res.status(401).json({data: null});
       }
     }
-  })(req, res);
+  }
 }
