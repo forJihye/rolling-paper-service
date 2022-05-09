@@ -55,7 +55,7 @@ const PaperCreate: NextPage = () => {
         <div className="flex justify-center items-center">
           <div className="flex-1">
             <label id="year" className="block text-sm font-medium text-gray-700">Year</label>
-            <input type="number" name="year" id="year" maxLength={4}
+            <input type="number" name="year" id="year" max={new Date().getFullYear()}
               className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
               placeholder="YYYY"
               value={state.year}
@@ -64,7 +64,7 @@ const PaperCreate: NextPage = () => {
           </div>
           <div className="flex-1 pl-3">
             <label id="month" className="block text-sm font-medium text-gray-700">Month</label>
-            <input type="number" name="month" id="month" maxLength={2} 
+            <input type="number" name="month" id="month" max={12}
               className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
               placeholder="MM"
               value={state.month}
@@ -73,7 +73,7 @@ const PaperCreate: NextPage = () => {
           </div>
           <div className="flex-1 pl-3">
             <label id="day" className="block text-sm font-medium text-gray-700">Day</label>
-            <input type="number" name="day" id="day" maxLength={2} 
+            <input type="number" name="day" id="day" max={31}
               className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
               placeholder="DD"
               value={state.day}
