@@ -46,12 +46,10 @@ export async function getToken(email: string) {
 
 export async function updateToken(email: string, token: string) {
   const tokenDocRef = db.collection('tokens').doc(email);
-
   await tokenDocRef.set({
     token,
     expires: Date.now() + 60 * 60 * 1000,
   });
-
   return token;
 }
 

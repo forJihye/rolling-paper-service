@@ -13,8 +13,8 @@ export default NextAuth({
   adapter: FirebaesAdapter(db),
   callbacks: {
     session: async ({ session, user }) => {
-       session.id = user.id;
-       return session as Session;
+      session.id = user.id;
+      return session as Session;
     }
   },
 })

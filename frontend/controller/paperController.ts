@@ -1,5 +1,5 @@
 import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { db } from "firebaseClient";
+import { db } from "lib/firebase-client";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Session } from "next-auth";
 import { getSession } from "next-auth/react";

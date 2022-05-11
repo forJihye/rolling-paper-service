@@ -1,5 +1,5 @@
 import { collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { db } from "firebaseClient";
+import { db } from "lib/firebase-client";
 import { NextApiRequest, NextApiResponse } from "next";
 import { v4 as uuid } from 'uuid';
 
