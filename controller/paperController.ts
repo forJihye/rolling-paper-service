@@ -11,26 +11,26 @@ export const createPaper = async (
   user: Session
 ) => {
   try {
-    const uid = nanoid();
-    const paperData = {
-      userId: user.id,
-      userName: user.name,
-      friendName: req.body.name,
-      friendBirth: req.body.birthDate,
-      completedUid: '',
-      isCompleted: false,
-      posts: [],
-    };
-    await runTransaction(db, async (transaction) => {
+    const data = await runTransaction(db, async (transaction) => {
+      const uid = nanoid();
+      const paperData = {
+        userId: user.id,
+        userName: user.name,
+        friendName: req.body.name,
+        friendBirth: req.body.birthDate,
+        completedUid: '',
+        isCompleted: false,
+        posts: [],
+      };
       const userRef = doc(db, `users/${user.id}`);
       const userDoc = await transaction.get(userRef);
       if (!userDoc.exists()) throw "Document does not exist!"; // 존재하지 않는 문서
       const userPapers = userDoc.data().papers as string[] ?? [];
-      await setDoc(doc(db, `papers/${uid}`), paperData);
-      await updateDoc(userRef, { papers: [...userPapers, uid] });
-      const data = { ...paperData, uid } as PaperData;
-      return res.status(200).json({data});
+      await transaction.set(doc(db, `papers/${uid}`), paperData);
+      await transaction.update(userRef, { papers: [...userPapers, uid] });
+      return { ...paperData, uid } as PaperData;
     });
+    return res.status(200).json({data: data});
   } catch (e) {
     return res.status(401).json({data: null});
   }
