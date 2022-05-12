@@ -21,12 +21,12 @@ export const createPaper = async (
       isCompleted: false,
       posts: [],
     };
-    setDoc(doc(db, `papers/${uid}`), paperData);
+    await setDoc(doc(db, `papers/${uid}`), paperData);
     const userRef = doc(db, `users/${user.id}`);
     const userDoc = await getDoc(userRef);
     if (!userDoc.exists()) throw "Document does not exist!"; // 존재하지 않는 문서
-    const userPapers = userDoc.data().papers as string[];
-    updateDoc(userRef, {papers: [ ...userPapers, uid ]});
+    const userPapers = userDoc.data().papers as string[] ?? [];
+    await updateDoc(userRef, {papers: [ ...userPapers, uid ]});
     const data = { ...paperData, uid } as PaperData
     return res.status(200).json({data});
   } catch (e) {
