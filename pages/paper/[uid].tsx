@@ -1,73 +1,65 @@
 import { GetServerSideProps, NextPage } from "next"
+import { MouseEvent, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import Layout from "@/components/layout";
 import LocalStorage from "helper/ls";
+import { v4 as uuid } from 'uuid';
+import { formatInTimeZone } from 'date-fns-tz'
 
-// http://localhost:3000/paper/b41f1b83-945f-4d97-a957-34d233b8ac50
-const ls = new LocalStorage()
+const ls = new LocalStorage();
+
 const PaperMain: NextPage<{paper: PaperData;}> = ({paper}) => {
   const router = useRouter();
-  const [name, setName] = useState<string>('');
-  const [message, setMessage] = useState<string>('');
-  const [postKey, setPostKey] = useState<number|null>(); 
-  const [targetPost, setTargetPost] = useState<PostData[]>([]);
+  const formRef = useRef<HTMLFormElement>(null)
+  
+  const [targetPost, setTargetPost] = useState<PostData|null>(null);
+  const [postKey, setPostKey] = useState<string|null>(); 
   const [btnText, setBtnText] = useState<string>('');
 
   useEffect(() => {
-    const getPostKey = Number(ls.getItem(`${router.query.uid}`));
-    const targetPost = paper.posts.filter(({key}) => key === getPostKey);
-    setPostKey(getPostKey ? getPostKey : null);
+    if (!paper) return;
+    const postKey = ls.getItem(`${router.query.uid}`);
+    const targetPost = paper.posts.find(({key}) => key === postKey) as PostData;
     setTargetPost(targetPost);
-    setBtnText(!targetPost.length ? '메시지 등록' : '메시지 수정');
-    if (targetPost.length) {
-      setName(targetPost[0].name);
-      setMessage(targetPost[0].message);
-    }
+    setPostKey(postKey ? postKey : null);
+    setBtnText(!targetPost ? '메시지 등록' : '메시지 수정');
   }, []);
-
-  const onInputChange = (type: string) => (ev: ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
-    if (type === 'name') setName(ev.target.value);
-    else setMessage(ev.target.value);
-  }
 
   const onPostSubmit = async (ev: MouseEvent) => { // 롤링페이퍼 메시지 등록
     ev.preventDefault();
     try {
-      const key = Date.now();
+      const key = uuid();
       if (postKey === null) {
         ls.setItem(`${router.query.uid}`, `${key}`);
-        setPostKey(Number(key));
+        setPostKey(key);
       }
+      const form = formRef?.current as HTMLFormElement;
       await axios.post(`/api/paper/${router.query.uid}`, {
-        key: !postKey ? key : Number(ls.getItem(`${router.query.uid}`)),
-        name,
-        message
+        key: !postKey ? key : ls.getItem(`${router.query.uid}`),
+        name: form.username.value,
+        message: form.message.value,
+        updateDate: new Date(),
+        ...!postKey && {initDate: new Date()}
       });
-      router.push(`/`);
+      router.push('/');
       return false;
     } catch (e: any) {
       throw Error(e)
     }
   }
 
-  const postFormRender = (postKey: number|null, targetPost: PostData[]) => {
-    // console.log(messageKey, targetMessage, paper)
+  const postFormRender = (postKey: number|null, targetPost: PostData) => {
     if (!postKey) {
-      return <form className="grid grid-cols-1 gap-4">
-        <input type="text" name="name" id="name" maxLength={4} 
+      return <form className="grid grid-cols-1 gap-4" ref={formRef}>
+        <input type="text" name="username" id="username" maxLength={4} 
           className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
-          placeholder="내 이름" 
-          value={name}
-          onChange={onInputChange('name')}
+          placeholder="내 이름"
         />
-        <textarea name="message" id="message" rows={15}
+        <textarea name="message" id="message" rows={8}
           className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
-          placeholder="메시지" 
-          value={message}
-          onChange={onInputChange('message')}
+          placeholder="메시지"
         />
         <button
           onClick={onPostSubmit}
@@ -75,32 +67,41 @@ const PaperMain: NextPage<{paper: PaperData;}> = ({paper}) => {
         >{btnText}</button>
       </form> 
     }
-    if (postKey && targetPost.length) {
-      return <form className="grid grid-cols-1 gap-4">
-        <input type="text" name="name" id="name" maxLength={4} 
-          className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
-          placeholder="내 이름" 
-          value={name}
-          onChange={onInputChange('name')}
-        />
-        <textarea name="message" id="message" rows={15}
-          className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
-          placeholder="메시지" 
-          value={message}
-          onChange={onInputChange('message')}
-        />
-        <button
-          onClick={onPostSubmit}
-          className="py-3 px-6 text-center text-white bg-yellow-500 rounded-md shadow-md"
-        >{btnText}</button>
-      </form> 
+    if (postKey && targetPost) {
+      return <>
+        <form className="grid grid-cols-1 gap-4" ref={formRef}>
+          <input type="text" name="username" id="username" maxLength={4} 
+            className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
+            placeholder="내 이름"
+            defaultValue={targetPost.name}
+          />
+          <textarea name="message" id="message" rows={8}
+            className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
+            placeholder="메시지"
+            defaultValue={targetPost.message}
+          />
+          <button
+            onClick={onPostSubmit}
+            className="py-3 px-6 text-center text-white bg-yellow-500 rounded-md shadow-md"
+          >{btnText}</button>
+        </form> 
+        <div className="text-right mt-6">
+          <div className='text-sm'>처음 등록날: {formatInTimeZone(targetPost.initDate, 'Asia/Seoul', 'yyyy-MM-dd HH:mm:ss')}</div>
+          <div className='text-sm'>마지막 수정날: {formatInTimeZone(targetPost.updateDate, 'Asia/Seoul', 'yyyy-MM-dd HH:mm:ss')}</div>
+        </div>
+      </>
     }
   }
 
+  if (!paper) {
+    return <Layout title="메시지 남기기">
+      <div>존재하지 않는 롤링페이퍼입니다</div>
+    </Layout>
+  }
   return <Layout title="메시지 남기기">
     <div className="w-full lg:w-10/12 mx-auto">
       <div>{paper.friendName}에게 메시지 남기기 ! (만든 친구: {paper.userName})</div>
-      {!paper.isCompleted ? <div>{postFormRender(postKey as (number|null), targetPost)}</div> : <div>
+      {!paper.isCompleted ? <div>{postFormRender(postKey as (number|null), targetPost as (PostData))}</div> : <div>
         <Link href={`/complete/${paper.completedUid}`}>
           <a>완성 된 롤링페이퍼 보기</a>
         </Link>
@@ -110,19 +111,11 @@ const PaperMain: NextPage<{paper: PaperData;}> = ({paper}) => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  try {
-    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/paper/${context.query.uid}`);
-    const data: {paper: PaperData} = await res.json();
-    return {
-      props: {
-        paper: data.paper
-      }
-    }
-  } catch (e) {
-    return {
-      props: {
-        paper: []
-      }
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/paper/${context.query.uid}`);
+  const data: {paper: PaperData} = await res.json();
+  return {
+    props: {
+      paper: data.paper
     }
   }
 }

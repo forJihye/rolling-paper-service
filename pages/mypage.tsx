@@ -6,11 +6,13 @@ import axios from "axios";
 import Layout from "@/components/layout";
 import format from "date-fns/format";
 
-const Mypage: NextPage<{papers: PaperData[]}> = ({papers}) => {
-  const [state, setState] = useState<PaperData[]>([]);
+type UserPapers = PaperData[] | null;
+
+const Mypage: NextPage<{papers: UserPapers}> = ({papers}) => {
+  const [usePapers, setUserPapers] = useState<UserPapers>(null);
 
   useEffect(() => {
-    setState(papers);
+    setUserPapers(papers);
   }, []);
 
   // 롤링 페이퍼 삭제
@@ -49,9 +51,9 @@ const Mypage: NextPage<{papers: PaperData[]}> = ({papers}) => {
     <div className="w-full lg:w-10/12 mx-auto mb-10">
       <p className="text-xl">내가 만든 롤링페이퍼</p>
       <ul>
-        {!state.length 
+        {!usePapers 
         ? <div>만든 롤링페이퍼 없음.</div> 
-        : state.map((paper, i) => {
+        : usePapers.map((paper, i) => {
           return <li key={`paper-${i}`} className='py-5 border-t border-gray-300 border-solid text-sm'>
             <div>친구 이름: {paper.friendName}</div>
             <div>친구 생일: {paper.friendBirth && format(new Date(paper.friendBirth), 'yyy-MM-dd')}</div>
@@ -93,7 +95,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       cookie: context.req.headers.cookie || "",
     },
   });
-  const data: {papers: PaperData[]} = await res.json();
+  const data: {papers: UserPapers} = await res.json();
   return {
     props: {
       papers: data.papers

@@ -1,19 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-
-const auth = getAuth();
-createUserWithEmailAndPassword(auth, process.env.FIREBASE_AUTH_EMAIL, process.env.FIREBASE_AUTH_PASSWORD)
-  .then((userCredential) => {
-    // Signed in
-    const user = userCredential.user;
-    // ...
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    // ..
-  });
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
 export const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
@@ -25,7 +12,20 @@ export const firebaseConfig = {
   measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 };
 
+const auth = getAuth();
+signInWithEmailAndPassword(auth, process.env.FIREBASE_AUTH_EMAIL as string, process.env.FIREBASE_AUTH_PASSWORD as string)
+  .then((userCredential) => {
+    // Signed in
+    const user = userCredential.user;
+    // ...
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    throw errorMessage;
+  });
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
+  
 export { app, db };

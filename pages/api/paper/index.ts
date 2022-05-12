@@ -8,6 +8,7 @@ export default async function handler( req: NextApiRequest, res: NextApiResponse
   const session = await getSession({req});
   const user = session?.user as Session;
   if (!session) {
+    console.log( 'Permission Denied')
     throw 'Permission Denied';
     // return res.status(401).json({ error: 'Permission Denied' });
   } else {

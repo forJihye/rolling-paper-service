@@ -19,9 +19,11 @@ type PaperData = {
 }
 
 type PostData = {
-  key: number;
+  key: string;
   name: string;
   message: string;
+  initDate: string;
+  updateDate: string;
 }
 
 type CompletedPaper = {
