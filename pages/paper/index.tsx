@@ -26,7 +26,7 @@ const PaperCreate: NextPage = () => {
     try {
       const form = formRef?.current as HTMLFormElement;
       const nameVal = form.friendName.value;
-      const birthDateVal = new Date(`${form.year.value}-${form.month.value}-${form.day.value}`);
+      const birthDateVal = new Date(`${form.year.value}-${form.month.value}-${form.date.value}`);
       const paperData = {
         name: nameVal,
         birthDate: birthDateVal,
@@ -69,8 +69,8 @@ const PaperCreate: NextPage = () => {
             />
           </div>
           <div className="flex-1 pl-3">
-            <label id="day" className="block text-sm font-medium text-gray-700">Day</label>
-            <input type="number" name="day" id="day" max={31}
+            <label id="date" className="block text-sm font-medium text-gray-700">Date</label>
+            <input type="number" name="date" id="date" max={31}
               className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
               placeholder="DD"
             />
