@@ -30,3 +30,5 @@ type CompletedPaper = {
   posts: PostData[];
   isCompleted: boolean;
 }
+
+type UserPapers = PaperData[] | null;

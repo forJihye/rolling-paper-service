@@ -3,10 +3,10 @@ import { MouseEvent, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import Layout from "@/components/layout";
+import Layout from "@/components/Layout";
 import LocalStorage from "helper/ls";
 import { v4 as uuid } from 'uuid';
-import { formatInTimeZone } from 'date-fns-tz'
+import { dateFormat } from "helper/utils";
 
 const ls = new LocalStorage();
 
@@ -86,8 +86,8 @@ const PaperMain: NextPage<{paper: PaperData;}> = ({paper}) => {
           >{btnText}</button>
         </form> 
         <div className="text-right mt-6">
-          <div className='text-sm'>처음 등록날: {formatInTimeZone(targetPost.initDate, 'Asia/Seoul', 'yyyy-MM-dd HH:mm:ss')}</div>
-          <div className='text-sm'>마지막 수정날: {formatInTimeZone(targetPost.updateDate, 'Asia/Seoul', 'yyyy-MM-dd HH:mm:ss')}</div>
+          <div className='text-sm'>처음 등록날: {dateFormat(targetPost.initDate)}</div>
+          <div className='text-sm'>마지막 수정날: {dateFormat(targetPost.updateDate)}</div>
         </div>
       </>
     }

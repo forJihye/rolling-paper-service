@@ -1,4 +1,4 @@
-import Layout from "@/components/layout";
+import Layout from "@/components/Layout";
 import axios from "axios";
 import Router from 'next/router';
 import { GetServerSideProps, NextPage } from "next";

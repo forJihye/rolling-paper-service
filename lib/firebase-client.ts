@@ -12,20 +12,20 @@ export const firebaseConfig = {
   measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 };
 
-const auth = getAuth();
-signInWithEmailAndPassword(auth, process.env.FIREBASE_AUTH_EMAIL as string, process.env.FIREBASE_AUTH_PASSWORD as string)
-  .then((userCredential) => {
-    // Signed in
-    const user = userCredential.user;
-    // ...
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    throw errorMessage;
-  });
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-  
+
+// const auth = getAuth();
+// signInWithEmailAndPassword(auth, process.env.FIREBASE_AUTH_EMAIL as string, process.env.FIREBASE_AUTH_PASSWORD as string)
+//   .then((userCredential) => {
+//     // Signed in
+//     const user = userCredential.user;
+//     // ...
+//   })
+//   .catch((error) => {
+//     const errorCode = error.code;
+//     const errorMessage = error.message;
+//     throw errorMessage;
+//   });
+
 export { app, db };
