@@ -1,12 +1,14 @@
 import { GetServerSideProps, NextPage } from "next"
 import { MouseEvent, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
 import axios from "axios";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import Layout from "@/components/Layout";
-import LocalStorage from "helper/ls";
 import { v4 as uuid } from 'uuid';
+import LocalStorage from "helper/ls";
 import { dateFormat } from "helper/utils";
+import Layout from "@/components/Layout";
+import DdayCountdown from "@/components/DdayCountdown";
+import { setYear } from "date-fns";
 
 const ls = new LocalStorage();
 
@@ -17,6 +19,7 @@ const PaperMain: NextPage<{paper: PaperData;}> = ({paper}) => {
   const [targetPost, setTargetPost] = useState<PostData|null>(null);
   const [postKey, setPostKey] = useState<string|null>(); 
   const [btnText, setBtnText] = useState<string>('');
+  const [birthDay, setBirthDay] = useState<any>();
 
   useEffect(() => {
     if (!paper) return;
@@ -25,6 +28,7 @@ const PaperMain: NextPage<{paper: PaperData;}> = ({paper}) => {
     setTargetPost(targetPost);
     setPostKey(postKey ? postKey : null);
     setBtnText(!targetPost ? '메시지 등록' : '메시지 수정');
+    setBirthDay(paper.friendBirth);
   }, []);
 
   const onPostSubmit = async (ev: MouseEvent) => { // 롤링페이퍼 메시지 등록
@@ -100,6 +104,8 @@ const PaperMain: NextPage<{paper: PaperData;}> = ({paper}) => {
   }
   return <Layout title="메시지 남기기">
     <div className="w-full lg:w-10/12 mx-auto">
+      <div>생일까지 D-day!</div>
+      <DdayCountdown dDay={setYear(new Date(paper.friendBirth), new Date().getFullYear())} />
       <div>{paper.friendName}에게 메시지 남기기 ! (만든 친구: {paper.userName})</div>
       {!paper.isCompleted ? <div>{postFormRender(postKey as (number|null), targetPost as (PostData))}</div> : <div>
         <Link href={`/complete/${paper.completedUid}`}>
