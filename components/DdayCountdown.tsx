@@ -3,12 +3,13 @@ import { useEffect, useRef, useState } from "react";
 
 const DdayCountdown: NextPage<{dDay: Date}> = ({dDay}) => {
   const [dDayTime, setDDayTime] = useState(dDay.getTime());
-  const daysRef = useRef<HTMLDivElement>(null);
-  const hoursRef = useRef<HTMLDivElement>(null);
-  const minutesRef = useRef<HTMLDivElement>(null);
-  const secondsRef = useRef<HTMLDivElement>(null);
+  const daysRef = useRef<HTMLSpanElement>(null);
+  const hoursRef = useRef<HTMLSpanElement>(null);
+  const minutesRef = useRef<HTMLSpanElement>(null);
+  const secondsRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
+    if (!daysRef.current || !hoursRef.current || !minutesRef.current || !secondsRef.current) return;
     setInterval(() => {
       const now = Date.now();
       const timeDist = dDayTime - now;
@@ -16,10 +17,10 @@ const DdayCountdown: NextPage<{dDay: Date}> = ({dDay}) => {
       const hours = Math.floor((timeDist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((timeDist % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((timeDist % (1000 * 60)) / 1000);
-      (daysRef.current as HTMLDivElement).innerText = `${days}일`;
-      (hoursRef.current as HTMLDivElement).innerText = `${hours}시`;
-      (minutesRef.current as HTMLDivElement).innerText = `${minutes}분`;
-      (secondsRef.current as HTMLDivElement).innerText = `${seconds}초`;
+      (daysRef.current as HTMLSpanElement).innerText = `${days}일`;
+      (hoursRef.current as HTMLSpanElement).innerText = `${hours}시`;
+      (minutesRef.current as HTMLSpanElement).innerText = `${minutes}분`;
+      (secondsRef.current as HTMLSpanElement).innerText = `${seconds}초`;
     }, 1000);
   }, []); 
 

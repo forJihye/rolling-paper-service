@@ -17,19 +17,19 @@ const UserPaperList: NextPage<{
       <div>친구 생일: {paper.friendBirth && dateFormat(paper.friendBirth, 'yyyy-MM-dd')}</div>
       <div>내 이름: {paper.userName}</div>
       <div style={{fontSize: 13}}>{paper.uid}</div>
-      <Link href={`paper/${paper.uid}`}>
-        <a className='inline-block py-2 px-4 text-sm text-center text-white bg-yellow-500 rounded-md shadow-md'>메시지 남기기</a>
-      </Link>
       {!paper.isCompleted 
       ?  <>
+        <Link href={`paper/${paper.uid}`}>
+          <a className='inline-block py-2 px-4 text-sm text-center text-white bg-yellow-500 rounded-md shadow-md'>메시지 남기기</a>
+        </Link>
         <button 
           onClick={onPaperDelete(paper.uid)}
           className='inline-block py-2 px-4 text-sm text-center text-white bg-slate-400 rounded-md shadow-md'
-        >페이퍼 삭제</button>
+        >롤링페이퍼 삭제</button>
         <button 
           onClick={onPaperComplete(paper.uid)}
           className='inline-block py-2 px-4 text-sm text-center text-white bg-lime-500 rounded-md shadow-md'
-        >페이퍼 완성</button> 
+        >롤링페이퍼 완성</button> 
       </>
       : <Link href={{
           pathname: `complete/[uid]`,
