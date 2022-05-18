@@ -5,7 +5,7 @@ import axios from "axios";
 import Layout from "@/components/Layout";
 import UserPaperList from "@/components/UserPaperList";
 
-const Mypage: NextPage<{papers: UserPapers}> = ({papers}) => {
+const MyPapers: NextPage<{papers: UserPapers}> = ({papers}) => {
   const [usePapers, setUserPapers] = useState<UserPapers>(null);
 
   useEffect(() => {
@@ -46,7 +46,7 @@ const Mypage: NextPage<{papers: UserPapers}> = ({papers}) => {
 
   return <Layout>
     <div className="w-full lg:w-10/12 mx-auto mb-10">
-      <p className="text-xl">내가 만든 롤링페이퍼</p>
+      <p className="text-xl">내가 만든 내친구 롤링페이퍼</p>
       <UserPaperList
         papers={usePapers}
         onPaperDelete={onPaperDelete}
@@ -70,4 +70,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 }
 
-export default Mypage;
+export default MyPapers;

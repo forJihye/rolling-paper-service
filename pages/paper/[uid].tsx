@@ -11,7 +11,7 @@ import DdayCountdown from "@/components/DdayCountdown";
 import { setYear } from "date-fns";
 
 const ls = new LocalStorage();
-
+// FIXME: Error: Hydration failed because the initial UI does not match what was rendered on the server.
 const PaperMain: NextPage<{paper: PaperData;}> = ({paper}) => {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null)
@@ -63,7 +63,7 @@ const PaperMain: NextPage<{paper: PaperData;}> = ({paper}) => {
         />
         <textarea name="message" id="message" rows={8}
           className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
-          placeholder="메시지"
+          placeholder="메시지를 남겨줘!"
         />
         <button
           onClick={onPostSubmit}
@@ -81,17 +81,17 @@ const PaperMain: NextPage<{paper: PaperData;}> = ({paper}) => {
           />
           <textarea name="message" id="message" rows={8}
             className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
-            placeholder="메시지"
+            placeholder="메시지를 남겨줘!"
             defaultValue={targetPost.message}
           />
           <button
             onClick={onPostSubmit}
             className="py-3 px-6 text-center text-white bg-yellow-500 rounded-md shadow-md"
           >{btnText}</button>
-        </form> 
+        </form>
         <div className="text-right mt-6">
-          <div className='text-sm'>처음 등록날: {dateFormat(targetPost.initDate)}</div>
-          <div className='text-sm'>마지막 수정날: {dateFormat(targetPost.updateDate)}</div>
+          <div className='text-sm'>처음 등록일: {dateFormat(targetPost.initDate)}</div>
+          <div className='text-sm'>마지막 수정일: {dateFormat(targetPost.updateDate)}</div>
         </div>
       </>
     }
@@ -104,14 +104,15 @@ const PaperMain: NextPage<{paper: PaperData;}> = ({paper}) => {
   }
   return <Layout title="메시지 남기기">
     <div className="w-full lg:w-10/12 mx-auto">
-      <div>생일까지 D-day!</div>
+      <div>D-day!</div>
       <DdayCountdown dDay={setYear(new Date(paper.friendBirth), new Date().getFullYear())} />
-      <div>{paper.friendName}에게 메시지 남기기 ! (만든 친구: {paper.userName})</div>
+      <div>{paper.friendName}에게 전하고 싶은 말은 남겨줘!</div>
       {!paper.isCompleted ? <div>{postFormRender(postKey as (number|null), targetPost as (PostData))}</div> : <div>
         <Link href={`/complete/${paper.completedUid}`}>
           <a>완성 된 롤링페이퍼 보기</a>
         </Link>
       </div>}
+      <div>(만든 친구: {paper.userName})</div>
     </div>
   </Layout>
 }

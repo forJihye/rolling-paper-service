@@ -1,6 +1,8 @@
+import { countdown } from "helper/utils";
 import { NextPage } from "next";
 import { useEffect, useRef, useState } from "react";
 
+let timer: any;
 const DdayCountdown: NextPage<{dDay: Date}> = ({dDay}) => {
   const [dDayTime, setDDayTime] = useState(dDay.getTime());
   const daysRef = useRef<HTMLSpanElement>(null);
@@ -10,7 +12,7 @@ const DdayCountdown: NextPage<{dDay: Date}> = ({dDay}) => {
 
   useEffect(() => {
     if (!daysRef.current || !hoursRef.current || !minutesRef.current || !secondsRef.current) return;
-    setInterval(() => {
+    timer = setInterval(() => {
       const now = Date.now();
       const timeDist = dDayTime - now;
       const days = Math.floor(timeDist / (1000 * 60 * 60 * 24));
@@ -22,13 +24,22 @@ const DdayCountdown: NextPage<{dDay: Date}> = ({dDay}) => {
       (minutesRef.current as HTMLSpanElement).innerText = `${minutes}분`;
       (secondsRef.current as HTMLSpanElement).innerText = `${seconds}초`;
     }, 1000);
+    return () => {
+      clearInterval(timer);
+    }
   }, []); 
 
+  const renderTime = () => {
+    const {days, hours, minutes, seconds} = countdown(dDayTime);
+    return <>
+      <span ref={daysRef}>{days}일</span>
+      <span ref={hoursRef}>{hours}시</span>
+      <span ref={minutesRef}>{minutes}분</span>
+      <span ref={secondsRef}>{seconds}초</span>
+    </>
+  }
   return <div>
-    <span ref={daysRef}>0일</span>
-    <span ref={hoursRef}>0시</span>
-    <span ref={minutesRef}>0분</span>
-    <span ref={secondsRef}>0초</span>
+    {renderTime()}
   </div>
 }
 
