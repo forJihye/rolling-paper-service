@@ -2,8 +2,8 @@ import Layout from "@/components/Layout";
 import axios from "axios";
 import Router from 'next/router';
 import { GetServerSideProps, NextPage } from "next";
-import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "react";
-import { getSession, useSession } from "next-auth/react";
+import { MouseEvent, useRef, useState } from "react";
+import { getSession } from "next-auth/react";
 import { z } from "zod";
 
 const Paper = z.object({
@@ -12,13 +12,8 @@ const Paper = z.object({
 });
 
 const PaperCreate: NextPage = () => {
-  const { data: session, status } = useSession();  
   const [isValid, setIsValid] = useState({state: false, message: ''});
   const formRef = useRef<HTMLFormElement>(null);
-
-  useEffect(() => {
-    if (status === 'unauthenticated') Router.push('/login');
-  }, []);
 
   // 롤링 페이퍼 생성
   const onPaperSubmit = async (ev: MouseEvent) => {
@@ -39,7 +34,6 @@ const PaperCreate: NextPage = () => {
     } catch (err: any) {
       throw Error(err)
     }
-  
   }
 
   return <Layout>
@@ -87,9 +81,18 @@ const PaperCreate: NextPage = () => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  return {
-    props: {
-      session: await getSession(context)
+  const session = await getSession(context);
+  if (session === null || !session) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/login",
+      },
+      props:{},    
+    }
+  } else {
+    return {
+      props: { session } 
     }
   }
 }

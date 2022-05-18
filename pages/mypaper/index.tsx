@@ -4,6 +4,7 @@ import Router from "next/router";
 import axios from "axios";
 import Layout from "@/components/Layout";
 import UserPaperList from "@/components/UserPaperList";
+import { getSession } from "next-auth/react";
 
 const MyPapers: NextPage<{papers: UserPapers}> = ({papers}) => {
   const [usePapers, setUserPapers] = useState<UserPapers>(null);
@@ -21,7 +22,7 @@ const MyPapers: NextPage<{papers: UserPapers}> = ({papers}) => {
       await axios.delete(`/api/paper/${uid}`);
       Router.reload();
     } catch (e: any) {
-      throw Error(e)
+      throw Error(e);
     }
   }
   
@@ -40,7 +41,7 @@ const MyPapers: NextPage<{papers: UserPapers}> = ({papers}) => {
         },
       });
     } catch (e: any) {
-      throw Error(e)
+      throw Error(e);
     }
   }
 
@@ -57,15 +58,26 @@ const MyPapers: NextPage<{papers: UserPapers}> = ({papers}) => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/user/paper`, {
-    headers: {
-      cookie: context.req.headers.cookie || "",
-    },
-  });
-  const data: {papers: UserPapers} = await res.json();
-  return {
-    props: {
-      papers: data.papers
+  const session = await getSession(context);
+  if (session === null || !session) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/login",
+      },
+      props:{},    
+    }
+  } else {
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/user/paper`, {
+      headers: {
+        cookie: context.req.headers.cookie || "",
+      },
+    });
+    const data: {papers: UserPapers} = await res.json();
+    return {
+      props: {
+        papers: data.papers
+      }
     }
   }
 }
