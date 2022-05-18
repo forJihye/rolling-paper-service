@@ -9,26 +9,25 @@ import { dateFormat } from "helper/utils";
 import Layout from "@/components/Layout";
 import DdayCountdown from "@/components/DdayCountdown";
 import { setYear } from "date-fns";
+import PostForm from "@/components/PostForm";
 
 const ls = new LocalStorage();
-// FIXME: Error: Hydration failed because the initial UI does not match what was rendered on the server.
 const PaperMain: NextPage<{paper: PaperData;}> = ({paper}) => {
+  console.log(paper)
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null)
-  
-  const [targetPost, setTargetPost] = useState<PostData|null>(null);
+  const [targetPost, setTargetPost] = useState<PostData>();
   const [postKey, setPostKey] = useState<string|null>(); 
   const [btnText, setBtnText] = useState<string>('');
-  const [birthDay, setBirthDay] = useState<any>();
+  const [birthDay, setBirthDay] = useState<Date>(new Date(paper.friendBirth));
 
   useEffect(() => {
     if (!paper) return;
     const postKey = ls.getItem(`${router.query.uid}`);
-    const targetPost = paper.posts.find(({key}) => key === postKey) as PostData;
+    const targetPost = paper.posts.find(({key}) => key === postKey);
     setTargetPost(targetPost);
     setPostKey(postKey ? postKey : null);
     setBtnText(!targetPost ? '메시지 등록' : '메시지 수정');
-    setBirthDay(paper.friendBirth);
   }, []);
 
   const onPostSubmit = async (ev: MouseEvent) => { // 롤링페이퍼 메시지 등록
@@ -40,6 +39,7 @@ const PaperMain: NextPage<{paper: PaperData;}> = ({paper}) => {
         setPostKey(key);
       }
       const form = formRef?.current as HTMLFormElement;
+      // FIXME: 사파리 axios 호환 안됨. ky 라이브러리 검토
       await axios.post(`/api/paper/${router.query.uid}`, {
         key: !postKey ? key : ls.getItem(`${router.query.uid}`),
         name: form.username.value,
@@ -54,49 +54,6 @@ const PaperMain: NextPage<{paper: PaperData;}> = ({paper}) => {
     }
   }
 
-  const postFormRender = (postKey: number|null, targetPost: PostData) => {
-    if (!postKey) {
-      return <form className="grid grid-cols-1 gap-4" ref={formRef}>
-        <input type="text" name="username" id="username" maxLength={4} 
-          className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
-          placeholder="내 이름"
-        />
-        <textarea name="message" id="message" rows={8}
-          className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
-          placeholder="메시지를 남겨줘!"
-        />
-        <button
-          onClick={onPostSubmit}
-          className="py-3 px-6 text-center text-white bg-yellow-500 rounded-md shadow-md"
-        >{btnText}</button>
-      </form> 
-    }
-    if (postKey && targetPost) {
-      return <>
-        <form className="grid grid-cols-1 gap-4" ref={formRef}>
-          <input type="text" name="username" id="username" maxLength={4} 
-            className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
-            placeholder="내 이름"
-            defaultValue={targetPost.name}
-          />
-          <textarea name="message" id="message" rows={8}
-            className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
-            placeholder="메시지를 남겨줘!"
-            defaultValue={targetPost.message}
-          />
-          <button
-            onClick={onPostSubmit}
-            className="py-3 px-6 text-center text-white bg-yellow-500 rounded-md shadow-md"
-          >{btnText}</button>
-        </form>
-        <div className="text-right mt-6">
-          <div className='text-sm'>처음 등록일: {dateFormat(targetPost.initDate)}</div>
-          <div className='text-sm'>마지막 수정일: {dateFormat(targetPost.updateDate)}</div>
-        </div>
-      </>
-    }
-  }
-
   if (!paper) {
     return <Layout title="메시지 남기기">
       <div>존재하지 않는 롤링페이퍼입니다</div>
@@ -105,9 +62,13 @@ const PaperMain: NextPage<{paper: PaperData;}> = ({paper}) => {
   return <Layout title="메시지 남기기">
     <div className="w-full lg:w-10/12 mx-auto">
       <div>D-day!</div>
-      <DdayCountdown dDay={setYear(new Date(paper.friendBirth), new Date().getFullYear())} />
+      <DdayCountdown dDay={birthDay} />
       <div>{paper.friendName}에게 전하고 싶은 말은 남겨줘!</div>
-      {!paper.isCompleted ? <div>{postFormRender(postKey as (number|null), targetPost as (PostData))}</div> : <div>
+      {!paper.isCompleted 
+      ? <div>
+        <PostForm ref={formRef} targetPost={targetPost} onPostSubmit={onPostSubmit} btnText={btnText} />
+      </div> 
+      : <div>
         <Link href={`/complete/${paper.completedUid}`}>
           <a>완성 된 롤링페이퍼 보기</a>
         </Link>
@@ -119,10 +80,11 @@ const PaperMain: NextPage<{paper: PaperData;}> = ({paper}) => {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const res = await fetch(`${process.env.NEXTAUTH_URL}/api/paper/${context.query.uid}`);
+  // FIXME: api에서 넘어오는 friendBirth 데이터 타입 구분
   const data: {paper: PaperData} = await res.json();
   return {
     props: {
-      paper: data.paper
+      paper: data.paper // {...data.paper, friendBirth: new Date(data.paper.friendBirth)}
     }
   }
 }

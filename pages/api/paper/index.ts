@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { Session } from 'next-auth';
 import { getSession } from 'next-auth/react';
 import { createPaper } from 'controller/paperController';
-import { Body, createHandler, Get, Req, Res } from '@storyofams/next-api-decorators';
+import { Body, createHandler, Get, Put, Req, Res } from '@storyofams/next-api-decorators';
 
 export type CreatePaperInput = {
   name: string;
@@ -11,7 +11,7 @@ export type CreatePaperInput = {
 }
 
 class PaperMainHandler {
-  @Get()
+  @Put()
   async papers(@Req() req: NextApiRequest, @Res() res: NextApiResponse, @Body() body: CreatePaperInput) {
     return await createPaper(req, res, body);
   }

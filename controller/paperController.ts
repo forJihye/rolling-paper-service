@@ -20,7 +20,7 @@ export const createPaper = async (
         userId: user.id,
         userName: user.name,
         friendName: body.name,
-        friendBirth: body.birthDate,
+        friendBirth: new Date(body.birthDate),
         completedUid: '',
         isCompleted: false,
         posts: [],
@@ -43,7 +43,7 @@ export const getPaperByUid = async (req: NextApiRequest, res: NextApiResponse<{p
   const paperDocRef = doc(db, `papers/${req.query.uid}`);
   const paperDoc = await getDoc(paperDocRef);
   const paperData = paperDoc.data() as PaperData;
-  if (paperData) return res.json({paper: paperData}); 
+  if (paperData) return res.json({paper: {...paperData, friendBirth: (paperData.friendBirth as any).toDate()}}); 
   else return res.status(401).json({paper: null});
 }
 

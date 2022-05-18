@@ -4,8 +4,7 @@ export const dateFormat = (date: string, format: string = 'yyyy-MM-dd HH:mm:ss')
   return formatInTimeZone(date, 'Asia/Seoul', format);
 }
 
-export const countdown = (time: number) => {
-  const now = Date.now();
+export const countdown = (time: number, now: number) => {
   const timeDist = time - now;
   const days = Math.floor(timeDist / (1000 * 60 * 60 * 24));
   const hours = Math.floor((timeDist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));

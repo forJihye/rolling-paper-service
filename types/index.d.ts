@@ -12,7 +12,7 @@ type PaperData = {
   userId: string;
   userName: number;
   friendName: string;
-  friendBirth: string;
+  friendBirth: Date;
   completedUid: string;
   isCompleted: boolean;
   posts: PostData[];

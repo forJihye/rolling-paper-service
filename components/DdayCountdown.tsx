@@ -1,45 +1,41 @@
-import { countdown } from "helper/utils";
+import { setYear } from "date-fns";
 import { NextPage } from "next";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 let timer: any;
 const DdayCountdown: NextPage<{dDay: Date}> = ({dDay}) => {
-  const [dDayTime, setDDayTime] = useState(dDay.getTime());
-  const daysRef = useRef<HTMLSpanElement>(null);
-  const hoursRef = useRef<HTMLSpanElement>(null);
-  const minutesRef = useRef<HTMLSpanElement>(null);
-  const secondsRef = useRef<HTMLSpanElement>(null);
+  const [now, setNow] = useState<Date>();
+
+  const timeDist = dDay.getTime() - (setYear(now as Date, dDay.getFullYear()).getTime());
 
   useEffect(() => {
-    if (!daysRef.current || !hoursRef.current || !minutesRef.current || !secondsRef.current) return;
+    setNow(new Date())
     timer = setInterval(() => {
-      const now = Date.now();
-      const timeDist = dDayTime - now;
-      const days = Math.floor(timeDist / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((timeDist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((timeDist % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((timeDist % (1000 * 60)) / 1000);
-      (daysRef.current as HTMLSpanElement).innerText = `${days}일`;
-      (hoursRef.current as HTMLSpanElement).innerText = `${hours}시`;
-      (minutesRef.current as HTMLSpanElement).innerText = `${minutes}분`;
-      (secondsRef.current as HTMLSpanElement).innerText = `${seconds}초`;
+      setNow(new Date());
     }, 1000);
     return () => {
       clearInterval(timer);
     }
   }, []); 
 
-  const renderTime = () => {
-    const {days, hours, minutes, seconds} = countdown(dDayTime);
-    return <>
-      <span ref={daysRef}>{days}일</span>
-      <span ref={hoursRef}>{hours}시</span>
-      <span ref={minutesRef}>{minutes}분</span>
-      <span ref={secondsRef}>{seconds}초</span>
-    </>
+  const getDays = () => {
+    return Math.floor(timeDist / (1000 * 60 * 60 * 24));
   }
+  const getHours = () => {
+    return Math.floor((timeDist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  }
+  const getMinutes = () => {
+    return Math.floor((timeDist % (1000 * 60 * 60)) / (1000 * 60));
+  }
+  const getSeconds = () => {
+    return Math.floor((timeDist % (1000 * 60)) / 1000);
+  }
+
   return <div>
-    {renderTime()}
+    <span>{getDays()}일</span>
+    <span>{getHours()}시</span>
+    <span>{getMinutes()}분</span>
+    <span>{getSeconds()}초</span>
   </div>
 }
 
