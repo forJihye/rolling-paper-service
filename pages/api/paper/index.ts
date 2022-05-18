@@ -5,7 +5,7 @@ import { getSession } from 'next-auth/react';
 import { createPaper } from 'controller/paperController';
 import { Body, createHandler, Get, Req, Res } from '@storyofams/next-api-decorators';
 
-type CreatePaperInput = {
+export type CreatePaperInput = {
   name: string;
   birthDate: string;
 }
@@ -13,10 +13,9 @@ type CreatePaperInput = {
 class PaperMainHandler {
   @Get()
   async papers(@Req() req: NextApiRequest, @Res() res: NextApiResponse, @Body() body: CreatePaperInput) {
-    return await createPaper(req, res);
+    return await createPaper(req, res, body);
   }
 }
-
 export default createHandler(PaperMainHandler);
 
 // export default async function handler( req: NextApiRequest, res: NextApiResponse<any> ) {
@@ -26,7 +25,7 @@ export default createHandler(PaperMainHandler);
 //     throw 'Permission Denied';
 //   } else {
 //     if (req.method === "PUT") { // 롤링페이퍼 생성
-//       return await createPaper(req, res, user);
+//       return await createPaper(req, res);
 //     }
 //   } 
 // }

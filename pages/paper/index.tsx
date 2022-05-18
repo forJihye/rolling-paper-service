@@ -32,6 +32,7 @@ const PaperCreate: NextPage = () => {
       setIsValid({state: false, message: ''});
       Router.push(`/paper/${data.uid}`);
     } catch (err: any) {
+      console.log(err)
       throw Error(err)
     }
   }

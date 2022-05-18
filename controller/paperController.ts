@@ -4,10 +4,12 @@ import { nanoid } from "nanoid";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Session } from "next-auth";
 import { getSession } from "next-auth/react";
+import { CreatePaperInput } from "pages/api/paper";
 
 export const createPaper = async (
   req: NextApiRequest, 
-  res: NextApiResponse<{ data: PaperData | null; }>
+  res: NextApiResponse<{ data: PaperData | null; }>,
+  body: CreatePaperInput
 ) => {
   const session = await getSession({req});
   const user = session?.user as Session;
@@ -17,8 +19,8 @@ export const createPaper = async (
       const paperData = {
         userId: user.id,
         userName: user.name,
-        friendName: req.body.name,
-        friendBirth: req.body.birthDate,
+        friendName: body.name,
+        friendBirth: body.birthDate,
         completedUid: '',
         isCompleted: false,
         posts: [],
