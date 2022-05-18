@@ -7,9 +7,10 @@ import { getSession } from "next-auth/react";
 
 export const createPaper = async (
   req: NextApiRequest, 
-  res: NextApiResponse<{ data: PaperData | null; }>, 
-  user: Session
+  res: NextApiResponse<{ data: PaperData | null; }>
 ) => {
+  const session = await getSession({req});
+  const user = session?.user as Session;
   try {
     const data = await runTransaction(db, async (transaction) => {
       const uid = nanoid();
