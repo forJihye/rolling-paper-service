@@ -1,12 +1,11 @@
-import { deletePosts } from "controller/postsController";
-import { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { Body, createHandler, Delete, Get, Post, Put, Req, Res } from '@storyofams/next-api-decorators';
+import { deletePosts } from 'controller/postsController';
 
-export default async function handler( req: NextApiRequest, res: NextApiResponse<any> ) {
-  if (req.method === "GET") { 
-  } 
-  else if (req.method === 'DELETE') {
+class PaperPostHandler {
+  @Delete()
+  async posts(@Req() req: NextApiRequest, @Res() res: NextApiResponse) {
     return await deletePosts(req, res);
   }
-  else if (req.method === "POST") {
-  } 
 }
+export default createHandler(PaperPostHandler);

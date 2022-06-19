@@ -7,12 +7,26 @@ type User = {
   papers?: string[]
 }
 
+type StorePaperData = {
+  uid: string;
+  userId: string;
+  userName: number;
+  friendName: string;
+  friendBirth: {
+    nanoseconds: number;
+    seconds: number;
+  };
+  completedUid: string;
+  isCompleted: boolean;
+  posts: PostData[];
+}
+
 type PaperData = {
   uid: string;
   userId: string;
   userName: number;
   friendName: string;
-  friendBirth: Date;
+  friendBirth: string;
   completedUid: string;
   isCompleted: boolean;
   posts: PostData[];
@@ -22,8 +36,8 @@ type PostData = {
   key: string;
   name: string;
   message: string;
-  initDate: string;
-  updateDate: string;
+  initDate: Date;
+  updateDate: Date;
 }
 
 type CompletedPaper = {

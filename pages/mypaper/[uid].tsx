@@ -1,6 +1,6 @@
 import Checkbox from "@/components/Checkbox";
 import Layout from "@/components/Layout";
-import axios from "axios";
+import ky from "ky";
 import { GetServerSideProps, NextPage } from "next";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -25,7 +25,9 @@ const PaperAdmin: NextPage<{paper: PaperData}> = ({paper}) => {
     if (isSelect) {
       if (checkedPosts.size > 0) {
         if(window.confirm('삭제 하시겠습니까?')) {
-          const {data: {data}} = await axios.delete(`/api/paper/${router.query.uid}/posts`, { data: { posts: [...checkedPosts] } });
+          await ky.delete(`/api/paper/${router.query.uid}/posts`, { json: { 
+            posts: [...checkedPosts] } 
+          });
           router.reload();
         }
       }

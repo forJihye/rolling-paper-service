@@ -1,14 +1,24 @@
 import Layout from "@/components/Layout";
-import axios from "axios";
 import Router from 'next/router';
 import { GetServerSideProps, NextPage } from "next";
 import { MouseEvent, useRef, useState } from "react";
 import { getSession } from "next-auth/react";
 import { z } from "zod";
+import ky from "ky";
 
 const Paper = z.object({
   name: z.string(),
+  year: z.number().gte(1919).lte(new Date().getFullYear() + 1),
   birthDate: z.date(),
+});
+
+const months = Array.from({length: 12}, (_, i) => {
+  const v = i + 1
+  return v < 10 ? `0${v}` : v;
+});
+const dates = Array.from({length: 31}, (_, i) => {
+  const v = i + 1
+  return v < 10 ? `0${v}` : v;
 });
 
 const PaperCreate: NextPage = () => {
@@ -21,14 +31,24 @@ const PaperCreate: NextPage = () => {
     try {
       const form = formRef?.current as HTMLFormElement;
       const nameVal = form.friendName.value;
-      const birthDateVal = new Date(`${form.year.value}-${form.month.value}-${form.date.value}`);
+      const yearVal = form.year.value;
+      const monthVal = form.month.value;
+      const dateVal = form.date.value;
+      if (!nameVal.length || !yearVal.length || !monthVal.length || !dateVal.length) return;
       const paperData = {
         name: nameVal,
-        birthDate: birthDateVal,
+        year: Number(yearVal),
+        birthDate: new Date(`${yearVal}-${monthVal}-${dateVal}`),
       };
       const validation = Paper.safeParse(paperData);
-      if (!validation.success) return setIsValid({state: true, message: '올바르지 않는 입력입니다'});
-      const {data: {data}} = await axios.put('/api/paper', paperData);
+      if (!validation.success) return setIsValid({state: true, message: '잘못된 날짜입니다.'});
+      const response = await ky.put('/api/paper', {
+        json: {
+          name: paperData.name,
+          birthDate: paperData.birthDate
+        }
+      });
+      const data = await response.json() as StorePaperData;
       setIsValid({state: false, message: ''});
       Router.push(`/paper/${data.uid}`);
     } catch (err: any) {
@@ -43,7 +63,7 @@ const PaperCreate: NextPage = () => {
       <form className="grid grid-cols-1 gap-4" ref={formRef}>
         <div>
           <label id="name" className="block text-sm font-medium text-gray-700"> 친구 이름 </label>
-          <input type="text" name="friendName" id="friendName" maxLength={4} 
+          <input type="text" name="friendName" id="friendName" maxLength={4} minLength={2}
             className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
             placeholder="친구 이름" 
           />
@@ -51,24 +71,26 @@ const PaperCreate: NextPage = () => {
         <div className="flex justify-center items-center">
           <div className="flex-1">
             <label id="year" className="block text-sm font-medium text-gray-700">Year</label>
-            <input type="number" name="year" id="year" max={new Date().getFullYear()}
+            <input type="text" name="year" id="year" maxLength={4}
               className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
               placeholder="YYYY"
             />
           </div>
           <div className="flex-1 pl-3">
             <label id="month" className="block text-sm font-medium text-gray-700">Month</label>
-            <input type="number" name="month" id="month" max={12}
-              className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
-              placeholder="MM"
-            />
+            <select name="month" id="month" className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none">
+              {months.map((val, i) => 
+                <option key={`month-${i}`} value={val}>{val}</option>
+              )}
+            </select>
           </div>
           <div className="flex-1 pl-3">
             <label id="date" className="block text-sm font-medium text-gray-700">Date</label>
-            <input type="number" name="date" id="date" max={31}
-              className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
-              placeholder="DD"
-            />
+            <select name="date" id="date" className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none">
+              {dates.map((val, i) => 
+                <option key={`date-${i}`} value={val}>{val}</option>
+              )}
+            </select>
           </div>
         </div>
         {isValid && <div className="text-sm text-red-700">{isValid.message}</div>}

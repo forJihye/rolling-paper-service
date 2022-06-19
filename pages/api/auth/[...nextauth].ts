@@ -1,9 +1,10 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import KakaoProvider from "next-auth/providers/kakao";
+import { db } from "lib/firebase-client";
 import { FirebaseAdapter } from "@next-auth/firebase-adapter";
 import { collection, query, getDoc, where, limit, doc, getDocs, addDoc, updateDoc, deleteDoc, runTransaction } from "firebase/firestore";
-import { db } from "lib/firebase-client";
+// import { FirestoreAdapter } from "@lowfront/firebase-adapter";
 
 export default NextAuth({
   providers: [
@@ -24,7 +25,8 @@ export default NextAuth({
       clientSecret: process.env.KAKAO_CLIENT_SECRET as string,
     })
   ],
-// FIXME: toDate ERROR https://stackoverflow.com/questions/69876727/next-auth-google-auth-firebase-adapter
+  // adapter: FirestoreAdapter(db),
+  // FIXME: toDate ERROR https://stackoverflow.com/questions/69876727/next-auth-google-auth-firebase-adapter
   adapter: FirebaseAdapter({
     db,
     collection,

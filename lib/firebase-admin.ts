@@ -1,10 +1,10 @@
-import admin, {initializeApp, apps, credential, ServiceAccount} from 'firebase-admin';
-import { getAuth } from "firebase-admin/auth";
-import { getFirestore } from 'firebase/firestore';
-import serviceAccount from 'serviceAccountKey.json';
+import admin, { credential, ServiceAccount } from 'firebase-admin';
+import { App } from 'firebase-admin/app';
+import { getFirestore } from 'firebase-admin/firestore';
+import serviceAccount from 'serviceAccountKey';
 
 if (!admin.apps.length) {
-  initializeApp({
+  admin.initializeApp({
     credential: credential.cert({
       type: 'service_account',
       project_id: serviceAccount.project_id,
@@ -20,9 +20,11 @@ if (!admin.apps.length) {
   });  
 }
 
-export const app = admin.apps[0];
-export const auth = getAuth();
-export const db = getFirestore();
+const app = admin.apps[0] as App;
+const db = getFirestore(app);
+
+export {app, db};
+
 
 
 

@@ -5,10 +5,12 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 import { CreatePaperInput } from "pages/api/paper";
+import { PaperPostData } from "pages/api/paper/[uid]";
 
+// 롤링페이퍼 생성
 export const createPaper = async (
   req: NextApiRequest, 
-  res: NextApiResponse<{ data: PaperData | null; }>,
+  res: NextApiResponse<StorePaperData | null>,
   body: CreatePaperInput
 ) => {
   const session = await getSession({req});
@@ -31,22 +33,57 @@ export const createPaper = async (
       const userPapers = userDoc.data().papers as string[] ?? [];
       await transaction.set(doc(db, `papers/${uid}`), paperData);
       await transaction.update(userRef, { papers: [...userPapers, uid] });
-      return { ...paperData, uid } as PaperData;
+      return { ...paperData, uid } as any;
     });
-    return res.status(200).json({data: data});
+    return res.json({...data});
   } catch (e) {
-    return res.status(401).json({data: null});
+    return res.json(null);
   }
 }
 
+// 롤링페이퍼 재생성(재발급)
+export const newCreatePaper = async (
+  req: NextApiRequest, 
+  res: NextApiResponse<{uid: string}|null>,
+  body: {uid: string}
+) => {
+  const session = await getSession({req});
+  const user = session?.user as User;
+  if (!session) throw 'Permission Denied';
+  else {
+    try {
+      const data = await runTransaction(db, async (transaction) => {
+        const paperDocRef = doc(db, `papers/${body.uid}`);
+        const userDocRef = doc(db, `users/${user.id}`);
+        const paperDoc = await transaction.get(paperDocRef);
+        const userDoc = await transaction.get(userDocRef);
+        if (!userDoc.exists() ||!paperDoc.exists()) throw "Document does not exist!";
+        const newUid = nanoid();
+        const paperData = paperDoc.data() as StorePaperData;
+        const userPapers = userDoc.data().papers;
+        const updateUserPapers = userPapers.filter((paperUid: string) => paperUid !== body.uid);
+        await transaction.update(userDocRef, { papers: [...updateUserPapers, newUid] });
+        await transaction.set(doc(db, `papers/${newUid}`), paperData);
+        await transaction.delete(doc(db, `papers/${body.uid}`));
+        return { uid: newUid };
+      });
+      return res.json({...data});
+    } catch(e) {
+      return res.json(null);
+    }
+  }
+}
+
+// 롤링페이퍼 데이터 가져오기
 export const getPaperByUid = async (req: NextApiRequest, res: NextApiResponse<{paper: PaperData|null}>) => {
   const paperDocRef = doc(db, `papers/${req.query.uid}`);
   const paperDoc = await getDoc(paperDocRef);
-  const paperData = paperDoc.data() as PaperData;
+  const paperData = paperDoc.data() as StorePaperData;
   if (paperData) return res.json({paper: {...paperData, friendBirth: (paperData.friendBirth as any).toDate()}}); 
-  else return res.status(401).json({paper: null});
+  else return res.json({paper: null});
 }
 
+// 롤링페이퍼 삭제
 export const deletePaperByUid = async (req: NextApiRequest, res: NextApiResponse<{data: boolean}>) => {
   const session = await getSession({req});
   const user = session?.user as User;
@@ -54,67 +91,52 @@ export const deletePaperByUid = async (req: NextApiRequest, res: NextApiResponse
   else {
     try {
       const userDocRef = doc(db, `users/${user.id}`);
-      await deleteDoc(doc(db, `papers/${req.query.uid}`));
       const userDoc = await getDoc(userDocRef);
       if (!userDoc.exists()) throw "Document does not exist!";
+      await deleteDoc(doc(db, `papers/${req.query.uid}`));
       const userPapers = userDoc.data().papers;
       const updateUserPapers = userPapers.filter((paperUid: string) => paperUid !== req.query.uid);
-      updateDoc(userDocRef, {
+      await updateDoc(userDocRef, {
         papers: updateUserPapers
       });
-      return res.status(200).json({data: true});
+      return res.json({data: true});
     } catch(e) {
-      return res.status(401).json({data: false});
+      return res.json({data: false});
     }
   }
 }
 
-export const postPaperByUid = async (req: NextApiRequest, res: NextApiResponse<{data: boolean}>) => {
+// 롤링페이퍼 포스트 메시시 저장
+export const postPaperByUid = async (
+  req: NextApiRequest,
+  res: NextApiResponse<{data: boolean}>,
+  body: PaperPostData
+) => {
   try {
     const paperRef = doc(db, `papers/${req.query.uid}`);
     const paperSnap = await getDoc(paperRef);
     if (!paperSnap.exists()) throw "Document does not exist!";
     const posts = paperSnap.data().posts as PostData[];
-    const targetPost = posts.find(({key}) => key === req.body.key) as PostData;
-    if (targetPost) {
-      const updatePost = posts.map((post) => 
-        (post.key === req.body.key) ? {...post, name: req.body.name, message: req.body.message, updateDate: req.body.updateDate} : {...post}
-      )
-      await updateDoc(paperRef, { posts: [...updatePost] });
-    } else {
+    const targetPost = posts.findIndex(({key}) => key === body.key);
+    if (targetPost === -1) {
       posts.push({
-        key: req.body.key,
-        name: req.body.name,
-        message: req.body.message,
-        initDate: req.body.initDate,
-        updateDate: req.body.updateDate
+        key: body.key,
+        name: body.name,
+        message: body.message,
+        initDate: body.initDate as Date,
+        updateDate: body.updateDate
       });
-      await updateDoc(paperRef, {
-        posts: [...posts]
-      });
+      await updateDoc(paperRef, { posts: [...posts] });
+    } else {
+      const updatePost = posts.map((post) => 
+        (post.key === req.body.key) 
+        ? {...post, name: req.body.name, message: req.body.message, updateDate: req.body.updateDate} 
+        : post
+      );
+      await updateDoc(paperRef, { posts: [...updatePost] });
     }
     return res.json({data: true});
   } catch (e) {
-    return res.status(401).json({data: false});
+    return res.json({data: false});
   }
 }
-// async function insertPaperData(uid: string) {
-//   const paperData = {
-//     userId: user.id,
-//     userName: user.name,
-//     friendName: req.body.name,
-//     friendBirth: req.body.birthDate,
-//     completedUid: '',
-//     isCompleted: false,
-//     posts: [],
-//   };
-//   await setDoc(doc(db, `papers/${uid}`), paperData);
-//   return paperData;
-// }
-// async function updateUserPapers(uid: string) {
-//   const userRef = doc(db, `users/${user.id}`);
-//   const userDoc = await getDoc(userRef);
-//   if (!userDoc.exists()) throw "Document does not exist!"; // 존재하지 않는 문서
-//   const userPapers = userDoc.data().papers as string[] ?? [];
-//   await updateDoc(userRef, { papers: [...userPapers, uid] });
-// }

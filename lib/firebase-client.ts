@@ -1,6 +1,5 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
 export const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
@@ -14,18 +13,5 @@ export const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
-// const auth = getAuth();
-// signInWithEmailAndPassword(auth, process.env.FIREBASE_AUTH_EMAIL as string, process.env.FIREBASE_AUTH_PASSWORD as string)
-//   .then((userCredential) => {
-//     // Signed in
-//     const user = userCredential.user;
-//     // ...
-//   })
-//   .catch((error) => {
-//     const errorCode = error.code;
-//     const errorMessage = error.message;
-//     throw errorMessage;
-//   });
 
 export { app, db };

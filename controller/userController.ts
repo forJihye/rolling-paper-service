@@ -13,12 +13,16 @@ export const getUserPapers = async (req: NextApiRequest, res: NextApiResponse<{p
       const data = userPapers.map(async (paperUid: string) => {
         const paperDocRef = doc(db, `papers/${paperUid}`);
         const paperDoc = await getDoc(paperDocRef);
-        return { ...paperDoc.data(), uid: paperUid };
+        const paperDate = paperDoc.data() as PaperData;
+        return { ...paperDate, uid: paperUid };
       });
       const result = await Promise.all(data);
-      return res.status(200).json({papers: result});
-    } else return res.status(200).json({papers: null});
+      const papers = result.map(data => ({ ...data, friendBirth: data.friendBirth.toDate() }));
+      return res.json({papers});
+    } else {
+      return res.json({papers: null});
+    }
   } catch (e) {
-    return res.status(401).json({papers: null});
+    return res.json({papers: null});
   }
 }

@@ -12,7 +12,7 @@ export default function Layout({title = '', children, ...props}: {title?: string
     </Head>
     <div className="w-full flex-auto">
       <nav className="bg-white py-3 px-4">
-        <div className="w-11/12 sm:w-9/12 md:w-7/12 lg:w-5/12 mx-auto flex justify-between items-center">
+        <div className="w-11/12 mx-auto flex justify-between items-center">
           <div>LOGO</div>
           <div className="ml-auto" id="navbar-collapse">
             <Link href='/'>
@@ -31,13 +31,13 @@ export default function Layout({title = '', children, ...props}: {title?: string
                   signOut({callbackUrl: '/'});
                 }} 
                 className="p-2 lg:px-4 md:mx-2 text-indigo-600 text-center rounded first:border border-solid border-indigo-600 hover:bg-indigo-600 hover:text-white transition-colors duration-300"
-              >로그아웃 ({session.user?.name})</a>
+              >로그아웃 ({session.user?.name} / <small>{session.user?.email}</small>) </a>
             </>
             }
           </div>
         </div>
       </nav>
-      <main className="w-11/12 sm:w-9/12 md:w-6/12 lg:w-5/12 mx-auto flex-auto py-20">
+      <main className="w-11/12 mx-auto flex-auto py-20">
         {children}
       </main>
     </div>
