@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import Link from "next/link";
 import { MouseEvent } from "react";
-import { dateFormat, removeTimeFromDate } from "helper/utils";
+import { removeTimeFromDate } from "helper/utils";
 import { differenceInDays, setYear } from 'date-fns';
 
 const UserPaperList: NextPage<{

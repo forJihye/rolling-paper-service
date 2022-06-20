@@ -10,7 +10,6 @@ const MyPapers: NextPage<{papers: UserPapers}> = ({papers}) => {
   const [usePapers, setUserPapers] = useState<UserPapers>(null);
 
   useEffect(() => {
-    console.log(papers)
     setUserPapers(papers);
   }, []);
 
@@ -65,6 +64,7 @@ const MyPapers: NextPage<{papers: UserPapers}> = ({papers}) => {
       throw Error(e);
     }
   }
+
   return <Layout>
     <div className="w-full lg:w-10/12 mx-auto mb-10">
       <p className="text-xl">내가 만든 내친구 롤링페이퍼</p>

@@ -1,10 +1,10 @@
-import Checkbox from "@/components/Checkbox";
-import Layout from "@/components/Layout";
-import ky from "ky";
 import { GetServerSideProps, NextPage } from "next";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { MouseEvent, useState } from "react";
+import Checkbox from "@/components/Checkbox";
+import Layout from "@/components/Layout";
+import ky from "ky";
 
 const PaperAdmin: NextPage<{paper: PaperData}> = ({paper}) => {
   const router = useRouter();
@@ -22,35 +22,38 @@ const PaperAdmin: NextPage<{paper: PaperData}> = ({paper}) => {
   };
 
   const postDeleteHandler = async (ev: MouseEvent) => {
-    if (isSelect) {
-      if (checkedPosts.size > 0) {
-        if(window.confirm('삭제 하시겠습니까?')) {
-          await ky.delete(`/api/paper/${router.query.uid}/posts`, { json: { 
-            posts: [...checkedPosts] } 
-          });
-          router.reload();
-        }
+    if (checkedPosts.size > 0) {
+      if(window.confirm('선택된 메시지를 삭제 하시겠습니까?')) {
+        await ky.delete(`/api/paper/${router.query.uid}/posts`, { json: { 
+          posts: [...checkedPosts] } 
+        });
+        router.reload();
       }
-      setIsSelect(false);
-    } else {
-      setIsSelect(true);
-    }
+    } 
+    setIsSelect(false);
   }
   
   return <Layout title="페이퍼 관리">
     <div>{paper.friendName}에게 남겨진 메시지</div>
-    {paper.posts.length && <div onClick={postDeleteHandler}>{!isSelect ? '선택' : '완료'}</div>}
-
-    {!paper.posts.length && <div>남겨진 메시지가 없습니다.</div>}
-    <ul>
-    {paper.posts.map((post, i) => {
-      return <li key={`post-${i}`} className="p-5 bg-neutral-300 mb-4">
-        {isSelect && <Checkbox name={`post-${i}`} id={post.key} checkedHandler={checkedHandler} />}
-        <p>{post.name}</p>
-        <p>{post.message}</p>
-      </li>
-    })}
-    </ul>
+    {!paper.posts.length 
+    ? <div>남겨진 메시지가 없습니다.</div> 
+    : <>
+      {!isSelect 
+      ? <div onClick={() => setIsSelect(true)}>선택</div> 
+      : <>
+        <div onClick={postDeleteHandler}>삭제</div>
+        <div onClick={() => setIsSelect(false)}>취소</div>
+      </>}
+      <ul>
+        {paper.posts.map((post, i) => {
+          return <li key={`post-${i}`} className="p-5 bg-neutral-300 mb-4">
+            {isSelect && <Checkbox name={`post-${i}`} id={post.key} checkedHandler={checkedHandler} />}
+            <p>{post.name}</p>
+            <p>{post.message}</p>
+          </li>
+        })}
+      </ul>
+    </>}
   </Layout>
 }
 
