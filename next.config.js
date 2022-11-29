@@ -12,9 +12,9 @@ const nextConfig = {
       sizeLimit: '1mb',
     },
   },
-  env: {
-    BASE_URL: process.env.BASE_URL,
-  },
+  // env: {
+  //   BASE_URL: process.env.BASE_URL,
+  // },
 }
 
 module.exports = nextConfig
