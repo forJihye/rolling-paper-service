@@ -3,6 +3,15 @@ import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 
+type Session = {
+  user: {
+    email: string;
+    image: string;
+    name: string;
+  }
+  expires: string // time string
+}
+
 export default function Layout({title = '', children, ...props}: {title?: string; children: React.ReactNode}) {
   const { data: session } = useSession();
   

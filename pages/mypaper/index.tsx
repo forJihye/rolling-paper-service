@@ -33,7 +33,7 @@ const MyPapers: NextPage<{papers: UserPapers}> = ({papers}) => {
     if (!confirm) return;
     try {
       const response = await ky.put(`/api/complete`, { json : uid });
-      const data = await response.json();
+      const {data} = await response.json();
       const completedUid = data.completedUid;
       Router.push({
         pathname: '/complete/[uid]',

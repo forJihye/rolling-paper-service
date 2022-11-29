@@ -8,7 +8,7 @@ export const createPaperComplete = async (
   res: NextApiResponse<{data: null | {completedUid: string; isCompleted: boolean}}>
 ) => {
   try {
-    const paperDocRef = doc(db, `papers/${req.body.uid}`);
+    const paperDocRef = doc(db, `papers/${req.body}`);
     const paperDoc = await getDoc(paperDocRef);
     if (!paperDoc.exists()) { // 존재하지 않는 문서
       throw "Document does not exist!";
