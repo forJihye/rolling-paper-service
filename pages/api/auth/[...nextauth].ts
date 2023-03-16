@@ -27,7 +27,17 @@ export default NextAuth({
   // FIXME: toDate ERROR https://stackoverflow.com/questions/69876727/next-auth-google-auth-firebase-adapter
   adapter: FirestoreAdapter(db),
   secret: process.env.SESSION_SECRET,
-  callbacks: {}
+  callbacks: {
+    async session({session, user, token}) {
+      return {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        image: user.image,
+        expires: session.expires,
+      }
+    }
+  }
 })
 
 // import NextAuth from "next-auth";

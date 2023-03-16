@@ -2,9 +2,9 @@ type UserSession = {
   id: string;
   name: string;
   image: string;
-  emailVerified: null|string;
   email: string;
-  papers?: string[]
+  expires: string;
+  papers?: string[];
 }
 
 type StorePaperData = {

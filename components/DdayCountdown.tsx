@@ -8,8 +8,9 @@ const DdayCountdown: NextPage<{dDay: Date}> = ({dDay}) => {
   const [now, setNow] = useState<Date>();
 
   const timeDist = useMemo(() => {
-    return dDay.getTime() - (setYear(now as Date, dDay.getFullYear()).getTime());
-  }, [now]);
+    const getTime = () => dDay.getTime() - (setYear(now as Date, dDay.getFullYear()).getTime());
+    return getTime();
+  }, [ dDay, now ]);
 
   useEffect(() => {
     setNow(new Date())
@@ -36,7 +37,7 @@ const DdayCountdown: NextPage<{dDay: Date}> = ({dDay}) => {
     return Math.floor((timeDist % (1000 * 60)) / 1000);
   }
 
-  return <div style={{color: dayBefore ? 'red' : '#000'}}>
+  return <div className={`inline-block pl-3 text-base ${dayBefore ? 'text-gray-500' : 'text-pink'}`}>
     <span>{getDays()}일</span>
     <span>{getHours()}시</span>
     <span>{getMinutes()}분</span>

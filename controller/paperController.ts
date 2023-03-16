@@ -1,8 +1,7 @@
-import { deleteDoc, doc, getDoc, runTransaction, setDoc, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, runTransaction, updateDoc } from "firebase/firestore";
 import { db } from "lib/firebase-client";
 import { nanoid } from "nanoid";
 import { NextApiRequest, NextApiResponse } from "next";
-import { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 import { CreatePaperInput } from "pages/api/paper";
 import { PaperPostData } from "pages/api/paper/[uid]";
@@ -13,21 +12,20 @@ export const createPaper = async (
   res: NextApiResponse<StorePaperData | null>,
   body: CreatePaperInput
 ) => {
-  const session = await getSession({req});
-  const user = session?.user as UserSession;
+  const session = await getSession({req}) as UserSession;
   try {
     const data = await runTransaction(db, async (transaction) => {
       const uid = nanoid();
       const paperData = {
-        userId: user.id,
-        userName: user.name,
+        userId: session.id,
+        userName: session.name,
         friendName: body.name,
         friendBirth: new Date(body.birthDate),
         completedUid: '',
         isCompleted: false,
         posts: [],
       };
-      const userRef = doc(db, `users/${user.id}`);
+      const userRef = doc(db, `users/${session.id}`);
       const userDoc = await transaction.get(userRef);
       if (!userDoc.exists()) throw "Document does not exist!"; // 존재하지 않는 문서
       const userPapers = userDoc.data().papers as string[] ?? [];
@@ -36,7 +34,8 @@ export const createPaper = async (
       return { ...paperData, uid } as any;
     });
     return res.json({...data});
-  } catch (e) {
+  } catch (err) {
+    console.error(err);
     return res.json(null);
   }
 }
@@ -47,14 +46,13 @@ export const newCreatePaper = async (
   res: NextApiResponse<{uid: string}|null>,
   body: {uid: string}
 ) => {
-  const session = await getSession({req});
-  const user = session?.user as UserSession;
+  const session = await getSession({req}) as UserSession;
   if (!session) throw 'Permission Denied';
   else {
     try {
       const data = await runTransaction(db, async (transaction) => {
         const paperDocRef = doc(db, `papers/${body.uid}`);
-        const userDocRef = doc(db, `users/${user.id}`);
+        const userDocRef = doc(db, `users/${session.id}`);
         const paperDoc = await transaction.get(paperDocRef);
         const userDoc = await transaction.get(userDocRef);
         if (!userDoc.exists() ||!paperDoc.exists()) throw "Document does not exist!";
@@ -85,12 +83,11 @@ export const getPaperByUid = async (req: NextApiRequest, res: NextApiResponse<{p
 
 // 롤링페이퍼 삭제
 export const deletePaperByUid = async (req: NextApiRequest, res: NextApiResponse<{data: boolean}>) => {
-  const session = await getSession({req});
-  const user = session?.user as UserSession;
+  const session = await getSession({req}) as UserSession;
   if (!session) throw 'Permission Denied';
   else {
     try {
-      const userDocRef = doc(db, `users/${user.id}`);
+      const userDocRef = doc(db, `users/${session.id}`);
       const userDoc = await getDoc(userDocRef);
       if (!userDoc.exists()) throw "Document does not exist!";
       await deleteDoc(doc(db, `papers/${req.query.uid}`));

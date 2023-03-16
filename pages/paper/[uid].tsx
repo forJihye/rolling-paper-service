@@ -12,19 +12,20 @@ import PostForm from "@/components/PostForm";
 const ls = new LocalStorage();
 const PaperMain: NextPage<{paper: PaperData;}> = ({paper}) => {
   const router = useRouter();
-  const formRef = useRef<HTMLFormElement>(null)
+  const formRef = useRef<HTMLFormElement>(null);
+
   const [targetPost, setTargetPost] = useState<PostData>();
   const [postKey, setPostKey] = useState<string|null>(); 
   const [btnText, setBtnText] = useState<string>('');
   
   useEffect(() => {
-    console.log('paper', paper)
+    // console.log('paper', paper);
     if (!paper) return;
     const postKey = ls.getItem(`${router.query.uid}`);
     const targetPost = paper.posts.find(({key}) => key === postKey);
     setTargetPost(targetPost);
     setPostKey(postKey ? postKey : null);
-    setBtnText(!targetPost ? '메시지 남기기' : '메시지 수정');
+    setBtnText(!targetPost ? '남기기' : '수정할래');
   }, []);
 
   const onPostSubmit = async (ev: MouseEvent) => { // 롤링페이퍼 메시지 등록
@@ -57,23 +58,26 @@ const PaperMain: NextPage<{paper: PaperData;}> = ({paper}) => {
   }
 
   if (!paper) {
-    return <Layout title="메시지 남기기">
-      <div>존재하지 않는 롤링페이퍼입니다</div>
+    return <Layout title="">
+      <div className="py-14 text-center text-3xl text-gray-500 leading-10">😱<br/>롤링페이퍼를 찾을 수가 없어요!</div>
     </Layout>
   }
-  return <Layout title="메시지 남기기">
-    <div className="w-full lg:w-10/12 mx-auto">
-      <div>D-day!</div>
-      <DdayCountdown dDay={new Date(paper.friendBirth)} />
-      <br />
-      <div>{paper.friendName}에게 전하고 싶은 말은 남겨줘!</div>
+  return <Layout title="">
+    <div className="w-full px-6">
+      <div className="w-full text-right mb-5">
+        <span className="text-pink text-base">D-Day</span><DdayCountdown dDay={new Date(paper.friendBirth)} />
+      </div>
+      <div className="text-center mb-6">
+        <div className="text-xl text-pink">{paper.friendName}에게 하고 싶은 말을 남겨줘!</div>
+        <div className="text-sm text-gray-500">욕설과 비난은 {paper.friendName}의 마음을 아프게 합니다 😥</div>
+      </div>
       {!paper.isCompleted 
       ? <PostForm ref={formRef} targetPost={targetPost as PostData} onPostSubmit={onPostSubmit} btnText={btnText} /> 
       : <Link href={`/complete/${paper.completedUid}`}>
-          <a>완성 된 롤링페이퍼 보기</a>
+          <a className="block w-full py-5 px-12 mx-auto text-center rounded-full text-pink neumorphism hover:shadow-inset">💝롤링페이퍼가 완성됐어요💝</a>
         </Link>}
       <br />
-      <div>(만든 친구: {paper.userName})</div>
+      {/* <div>(만든 친구: {paper.userName})</div> */}
     </div>
   </Layout>
 }

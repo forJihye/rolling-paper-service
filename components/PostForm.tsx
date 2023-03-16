@@ -11,18 +11,18 @@ const PostForm = forwardRef(( {targetPost, onPostSubmit, btnText }: FormProps, r
   return <>
     <form className="grid grid-cols-1 gap-4" ref={ref }>
       <input type="text" name="username" id="username" maxLength={4} 
-        className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
+        className="block w-full py-4 px-6 bg-neumorphism shadow-inset rounded-full outline-none text-gray-500" 
         placeholder="내 이름"
         defaultValue={targetPost?.name ?? ''}
       />
       <textarea name="message" id="message" rows={8}
-        className="block w-full py-3 px-6 border border-solid border-gray-300 focus:border-yellow-500 rounded-md shadow-md outline-none" 
-        placeholder="메시지를 남겨줘!"
+        className="block w-full py-4 px-6 bg-neumorphism shadow-inset rounded-xl outline-none text-gray-500" 
+        placeholder="여기에 하고싶은말 작성해줘~"
         defaultValue={targetPost?.message ?? ''}
       />
       <button
         onClick={onPostSubmit}
-        className="py-3 px-6 text-center text-white bg-yellow-500 rounded-md shadow-md"
+        className="block w-full py-5 px-12 mx-auto text-center rounded-full text-pink neumorphism hover:shadow-inset"
       >{btnText}</button>
     </form>
     {targetPost && <div className="text-right mt-6">

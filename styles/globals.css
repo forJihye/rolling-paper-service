@@ -2,26 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
+/*@font-face {
   font-family: 'GmarketSans';
-  src: url("../public/fonts/GmarketSansLight.otf") format("otf"),
-      url("../public/fonts/GmarketSansTTFLight.ttf") format("truetype");
+  src: url("../public/fonts/GmarketSansLight.otf") format("otf"), url("../public/fonts/GmarketSansTTFLight.ttf") format("truetype");
   font-weight: lighter;
   font-style: noraml;
 }
 @font-face {
   font-family: 'GmarketSans';
-  src: url("../public/fonts/GmarketSansMedium.otf") format("otf"),
-      url("../public/fonts/GmarketSansTTFMedium.ttf") format("truetype");
+  src: url("../public/fonts/GmarketSansMedium.otf") format("otf"), url("../public/fonts/GmarketSansTTFMedium.ttf") format("truetype");
   font-weight: 400;
   font-style: noraml;
 }
 @font-face {
   font-family: 'GmarketSans';
-  src: url("../public/fonts/GmarketSansBold.otf") format("otf"),
-      url("../public/fonts/GmarketSansTTFBold.ttf") format("truetype");
+  src: url("../public/fonts/GmarketSansBold.otf") format("otf"), url("../public/fonts/GmarketSansTTFBold.ttf") format("truetype");
   font-weight: 700;
   font-style: noraml;
+}*/
+@font-face {
+  font-family: 'DovemayoGothic';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.1/Dovemayo_gothic.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
 }
 
 @layer base {
@@ -29,7 +32,22 @@
     position: realtive;
     width: 100%;
     height: 100%;
-    font-family: GmarketSans;
+    font-family: 'DovemayoGothic';
     font-weight: 400;
   }
+}
+
+body {
+  background: #F0F0F3;
+  font-size: 18px;
+}
+
+.main-frame {
+  width: 480px;
+  margin: 0 auto;
+}
+
+.neumorphism {
+  background: #F0F0F3;
+  box-shadow: -10px -10px 30px #FFFFFF, 10px 10px 30px rgba(174, 174, 192, 0.4);
 }
