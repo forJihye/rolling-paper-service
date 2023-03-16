@@ -14,7 +14,7 @@ export const createPaper = async (
   body: CreatePaperInput
 ) => {
   const session = await getSession({req});
-  const user = session?.user as Session;
+  const user = session?.user as UserSession;
   try {
     const data = await runTransaction(db, async (transaction) => {
       const uid = nanoid();
@@ -48,7 +48,7 @@ export const newCreatePaper = async (
   body: {uid: string}
 ) => {
   const session = await getSession({req});
-  const user = session?.user as User;
+  const user = session?.user as UserSession;
   if (!session) throw 'Permission Denied';
   else {
     try {
@@ -86,7 +86,7 @@ export const getPaperByUid = async (req: NextApiRequest, res: NextApiResponse<{p
 // 롤링페이퍼 삭제
 export const deletePaperByUid = async (req: NextApiRequest, res: NextApiResponse<{data: boolean}>) => {
   const session = await getSession({req});
-  const user = session?.user as User;
+  const user = session?.user as UserSession;
   if (!session) throw 'Permission Denied';
   else {
     try {

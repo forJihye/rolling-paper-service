@@ -21,7 +21,7 @@ if (!admin.apps.length) {
 }
 const app = admin.apps[0] as App
 const db = getFirestore(app);
-export {app, db};
+export { app, db };
 
 // if (!admin.apps.length) {
 //   admin.initializeApp({
@@ -31,7 +31,3 @@ export {app, db};
 // const app = admin.apps[0] as App;
 // const db = getFirestore(app);
 // export {app, db};
-
-
-
-

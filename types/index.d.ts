@@ -1,4 +1,4 @@
-type User = {
+type UserSession = {
   id: string;
   name: string;
   image: string;

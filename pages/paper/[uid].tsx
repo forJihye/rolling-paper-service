@@ -68,7 +68,7 @@ const PaperMain: NextPage<{paper: PaperData;}> = ({paper}) => {
       <br />
       <div>{paper.friendName}에게 전하고 싶은 말은 남겨줘!</div>
       {!paper.isCompleted 
-      ? <PostForm ref={formRef} targetPost={targetPost} onPostSubmit={onPostSubmit} btnText={btnText} /> 
+      ? <PostForm ref={formRef} targetPost={targetPost as PostData} onPostSubmit={onPostSubmit} btnText={btnText} /> 
       : <Link href={`/complete/${paper.completedUid}`}>
           <a>완성 된 롤링페이퍼 보기</a>
         </Link>}

@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Body, createHandler, Delete, Get, Post, Put, Req, Res } from '@storyofams/next-api-decorators';
+import { Body, createHandler, Delete, Get, Post, Put, Req, Res } from 'next-api-decorators';
 import { deletePosts } from 'controller/postsController';
 
 class PaperPostHandler {

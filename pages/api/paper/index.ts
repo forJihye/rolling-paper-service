@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createPaper, newCreatePaper } from 'controller/paperController';
-import { Body, createHandler, Get, Post, Put, Req, Res } from '@storyofams/next-api-decorators';
+import { Body, createHandler, Get, Post, Put, Req, Res } from 'next-api-decorators';
 
 export type CreatePaperInput = {
   name: string;

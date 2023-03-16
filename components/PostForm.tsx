@@ -1,11 +1,13 @@
 import { dateFormat } from "helper/utils";
 import { FC, forwardRef, LegacyRef, MouseEvent, PropsWithRef } from "react"
 
-const PostForm = forwardRef<HTMLFormElement, {
-  targetPost?: PostData;
+type FormProps = {
+  targetPost: PostData;
   onPostSubmit: (ev: MouseEvent) => void;
   btnText: string;
-}>(({ targetPost, onPostSubmit, btnText, }, ref) => {
+}
+
+const PostForm = forwardRef(( {targetPost, onPostSubmit, btnText }: FormProps, ref: React.Ref<HTMLFormElement>) => {
   return <>
     <form className="grid grid-cols-1 gap-4" ref={ref }>
       <input type="text" name="username" id="username" maxLength={4} 
@@ -28,7 +30,8 @@ const PostForm = forwardRef<HTMLFormElement, {
       <div className='text-sm'>마지막 수정일: {dateFormat(targetPost.updateDate)}</div>
     </div>}
   </>
-}) 
+});
 
+PostForm.displayName = "PostForm";
 
 export default PostForm

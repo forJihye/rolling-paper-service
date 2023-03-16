@@ -1,6 +1,16 @@
+import { Body, Catch, createHandler, Delete, Get, Post, Req, Res } from 'next-api-decorators';
 import { NextApiRequest, NextApiResponse } from "next";
 import { deletePaperByUid, getPaperByUid, postPaperByUid } from "controller/paperController";
-import { Body, createHandler, Delete, Get, Post, Put, Req, Res } from '@storyofams/next-api-decorators';
+
+function exceptionHandler(
+  error: unknown,
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  const message = error instanceof Error ? error.message : 'An unknown error occurred.';
+  res.status(200).json({ success: false, error: message });
+}
+
 
 export type PaperPostData = {
   key: string;
@@ -10,6 +20,7 @@ export type PaperPostData = {
   initDate?: Date;
 }
 
+@Catch(exceptionHandler)
 class PaperPostHandler {
   @Get()
   async paper(@Req() req: NextApiRequest, @Res() res: NextApiResponse) {  // 롤링페이퍼 데이터 가져오기

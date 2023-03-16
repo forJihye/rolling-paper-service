@@ -1,9 +1,8 @@
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "lib/firebase-client";
 import { NextApiRequest, NextApiResponse } from "next";
-import { Session } from "next-auth";
 
-export const getUserPapers = async (req: NextApiRequest, res: NextApiResponse<{papers: PaperData[]|null}>, user: Session) => {
+export const getUserPapers = async (req: NextApiRequest, res: NextApiResponse<{papers: PaperData[]|null}>, user: UserSession) => {
   try {
     const userDocRef = doc(db, `users/${user.id}`);
     const userDoc = await getDoc(userDocRef);

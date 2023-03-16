@@ -1,6 +1,6 @@
-import Layout from "@/components/Layout"
 import { NextPage } from "next";
 import { signIn } from "next-auth/react";
+import Layout from "@/components/Layout"
 
 const Login: NextPage<{}> = ({}) => {
   return <Layout>
