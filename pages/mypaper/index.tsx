@@ -6,26 +6,16 @@ import Layout from "@/components/Layout";
 import UserPaperList from "@/components/UserPaperList";
 import { getSession } from "next-auth/react";
 
-const MyPapers: NextPage<{papers: UserPapers}> = ({papers}) => {
-  const [usePapers, setUserPapers] = useState<UserPapers>(null);
+export type MyPapersData = (PaperData & {checked: boolean})[];
+
+const MyPapers: NextPage<{papers: MyPapersData}> = ({papers}) => {
+  const [paperList, setPaperList] = useState<MyPapersData>([]);
 
   useEffect(() => {
-    setUserPapers(papers);
+    // console.log(papers)
+    setPaperList(papers);
   }, []);
 
-  // 롤링 페이퍼 삭제
-  const onPaperDelete = (uid: string) => async (ev: MouseEvent) => {
-    ev.preventDefault();
-    const confirm = window.confirm('남겨진 메시지도 함께 삭제 됩니다.\n삭제 하시겠습니까?');
-    if (!confirm) return;
-    try {
-      await ky.delete(`/api/paper/${uid}`);
-      Router.reload();
-    } catch (e: any) {
-      throw Error(e);
-    }
-  }
-  
   // 롤링 페이퍼 완성
   const onPaperComplete = (uid: string) => async (ev: MouseEvent) => {
     ev.preventDefault();
@@ -64,15 +54,27 @@ const MyPapers: NextPage<{papers: UserPapers}> = ({papers}) => {
       throw Error(e);
     }
   }
-
+  
+  // 롤링 페이퍼 삭제
+  const onPaperDelete = async (papers: MyPapersData) => {
+    if (!papers) return;
+    try {
+      const deleted = papers.map(async (paper) => await ky.delete(`/api/paper/${paper.uid}`));
+      await Promise.all([...deleted]);
+      Router.reload();
+    } catch (e: any) {
+      throw Error(e);
+    }
+  }
+  
   return <Layout>
-    <div className="w-full lg:w-10/12 mx-auto mb-10">
-      <p className="text-xl">내가 만든 내친구 롤링페이퍼</p>
+    <div className="w-full px-6">
       <UserPaperList
-        papers={usePapers}
+        papers={paperList}
+        setPapers={setPaperList}
         onPaperReMake={onPaperReMake}
-        onPaperDelete={onPaperDelete}
         onPaperComplete={onPaperComplete}
+        onPaperListDelete={onPaperDelete}
       />
     </div>
   </Layout>
@@ -86,7 +88,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         permanent: false,
         destination: "/login",
       },
-      props:{},    
+      props: {},    
     }
   } else {
     const res = await fetch(`${process.env.NEXTAUTH_URL}/api/user/paper`, {
@@ -97,7 +99,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const data: {papers: UserPapers} = await res.json();
     return {
       props: {
-        papers: data.papers
+        papers: !data.papers ? [] : data.papers.map(paper => ({...paper, checked: false}))
       }
     }
   }

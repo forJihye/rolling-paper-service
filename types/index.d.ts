@@ -10,7 +10,7 @@ type UserSession = {
 type StorePaperData = {
   uid: string;
   userId: string;
-  userName: number;
+  userName: string;
   friendName: string;
   friendBirth: {
     nanoseconds: number;
@@ -24,7 +24,7 @@ type StorePaperData = {
 type PaperData = {
   uid: string;
   userId: string;
-  userName: number;
+  userName: string;
   friendName: string;
   friendBirth: string;
   completedUid: string;

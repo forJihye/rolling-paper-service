@@ -72,12 +72,10 @@ const PaperMain: NextPage<{paper: PaperData;}> = ({paper}) => {
         <div className="text-sm text-gray-500">욕설과 비난은 {paper.friendName}의 마음을 아프게 합니다 😥</div>
       </div>
       {!paper.isCompleted 
-      ? <PostForm ref={formRef} targetPost={targetPost as PostData} onPostSubmit={onPostSubmit} btnText={btnText} /> 
+      ? <PostForm ref={formRef} targetPost={targetPost as PostData} onPostSubmit={onPostSubmit} btnText={btnText} userName={paper.userName} /> 
       : <Link href={`/complete/${paper.completedUid}`}>
-          <a className="block w-full py-5 px-12 mx-auto text-center rounded-full text-pink neumorphism hover:shadow-inset">💝롤링페이퍼가 완성됐어요💝</a>
+          <a className="block w-full py-5 px-12 mx-auto text-center rounded-full text-pink neumorphism hover:shadow-inset">롤링페이퍼가 완성됐어요💝</a>
         </Link>}
-      <br />
-      {/* <div>(만든 친구: {paper.userName})</div> */}
     </div>
   </Layout>
 }

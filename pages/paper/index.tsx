@@ -44,7 +44,7 @@ const PaperCreate: NextPage = () => {
         birthDate: new Date(`${yearVal}-${monthVal}-${dateVal}`),
       };
       const validation = Paper.safeParse(paperData);
-      if (!validation.success) return setIsValid({state: true, message: '세상에 존재하지 않는 생년월일이에요😭'});
+      if (!validation.success) return setIsValid({state: true, message: '세상에 존재하지 않는 생년월일이에요 😭'});
       const response = await ky.put('/api/paper', {
         json: {
           name: paperData.name,
@@ -62,34 +62,34 @@ const PaperCreate: NextPage = () => {
 
   return <Layout>
     <div className="w-full px-6">
-      {/* <p className="">내 친구 롤링페이퍼 만들기</p> */}
+      <div className="text-2xl text-pink text-center tracking-tight mb-10">내 친구 롤링페이퍼 만들자</div>
       <form className="grid grid-cols-1 gap-4" ref={formRef}>
         <div>
-          <label id="name" className="block text-gray-500 pl-2 my-1"> Friend Name </label>
+          {/* <label id="name" className="block text-gray-500 pl-2 my-1"> 친구 이름 </label> */}
           <input type="text" name="friendName" id="friendName" maxLength={4} minLength={2}
-            className="block w-full py-4 px-6 bg-neumorphism shadow-inset rounded-full outline-none text-gray-500" placeholder="Friend Name" />
+            className="block w-full py-4 px-6 bg-neumorphism shadow-inset rounded-full outline-none text-gray-500" placeholder="친구 이름" />
         </div>
         <div className="flex justify-center items-center">
           <div className="flex-1">
-            <label id="year" className="block text-gray-500 pl-2 my-1">Year</label>
+            {/* <label id="year" className="block text-gray-500 pl-2 my-1">년도</label> */}
             <input type="text" name="year" id="year" maxLength={4}
               className="block w-full py-4 px-6 bg-neumorphism shadow-inset rounded-full outline-none text-gray-500" placeholder="YYYY"
             />
           </div>
           <div className="flex-1 pl-3">
-            <label id="month" className="block text-gray-500 pl-2 my-1">Month</label>
+            {/* <label id="month" className="block text-gray-500 pl-2 my-1">월</label> */}
             <select name="month" id="month" className="block w-full py-4 px-6 bg-neumorphism shadow-inset rounded-full outline-none text-gray-500">
-              {months.map((val, i) => <option key={`month-${i}`} value={val}>{val}</option> )}
+              {months.map((val, i) => <option key={`month-${i}`} value={val}>{val} 월</option> )}
             </select>
           </div>
           <div className="flex-1 pl-3">
-            <label id="date" className="block text-gray-500 pl-2 my-1">Date</label>
+            {/* <label id="date" className="block text-gray-500 pl-2 my-1">일</label> */}
             <select name="date" id="date" className="block w-full py-4 px-6 bg-neumorphism shadow-inset rounded-full outline-none text-gray-500">
-              {dates.map((val, i) => <option key={`date-${i}`} value={val}>{val}</option> )}
+              {dates.map((val, i) => <option key={`date-${i}`} value={val}>{val} 일</option> )}
             </select>
           </div>
         </div>
-        <div className="text-pink text-sm text-center py-4">{isValid.state ? isValid.message : ''}</div>
+        {!isValid.state ? null : <div className="text-gray-500 text-base text-center py-4">{isValid.message}</div>}
         <button onClick={onPaperSubmit} className="block w-full py-5 px-12 mx-auto text-center rounded-full text-pink neumorphism hover:shadow-inset">만들기</button>
       </form> 
     </div>

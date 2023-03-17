@@ -5,7 +5,9 @@ const PaperDetail: NextPage<{data: CompletedPaper}> = ({data}) => {
   
   if (!data?.posts.length) {
     return <Layout>
-      <div>남겨진 메시지 없음.</div>
+      <div className="py-12 text-center">
+        <div className="text-xl text-gray-500 mb-4">남겨진 메시지가 없어요 T_T</div>
+      </div> 
     </Layout> 
   } else {
     return <Layout>
