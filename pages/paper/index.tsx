@@ -61,7 +61,7 @@ const PaperCreate: NextPage = () => {
   }
 
   return <Layout>
-    <div className="w-full px-6">
+    <div className="w-full px-6 pt-10 pb-14">
       <div className="text-2xl text-pink text-center tracking-tight mb-10">내 친구 롤링페이퍼 만들자</div>
       <form className="grid grid-cols-1 gap-4" ref={formRef}>
         <div>

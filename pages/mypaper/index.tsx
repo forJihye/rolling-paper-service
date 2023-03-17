@@ -68,7 +68,7 @@ const MyPapers: NextPage<{papers: MyPapersData}> = ({papers}) => {
   }
   
   return <Layout>
-    <div className="w-full px-6">
+    <div className="w-full px-6 pt-10">
       <UserPaperList
         papers={paperList}
         setPapers={setPaperList}

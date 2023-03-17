@@ -12,7 +12,7 @@ const UserPaperList: NextPage<{
   onPaperComplete: (uid: string) => (ev: MouseEvent) => void;
   onPaperListDelete: (papers: MyPapersData) => Promise<void>;
 }> = ({papers, setPapers, onPaperReMake, onPaperComplete, onPaperListDelete}) => {
-  console.log(papers)
+  // console.log(papers)
 
   const [isDelete, setIsDelete] = useState(false);
 
@@ -63,7 +63,7 @@ const UserPaperList: NextPage<{
           <a className="block w-full py-5 px-12 mx-auto text-center rounded-full text-gray-500 neumorphism hover:shadow-inset">만들러 가기 🤸🏻</a>
         </Link>
       </div> 
-    : <div className="my-10">
+    : <div className="mt-6 mb-14">
       {papers.map((paper, i) => {
         const currentBirthDay = setYear(new Date(paper.friendBirth), new Date().getFullYear());
         const betweenDate = differenceInDays(removeTimeFromDate(currentBirthDay), removeTimeFromDate(new Date()));

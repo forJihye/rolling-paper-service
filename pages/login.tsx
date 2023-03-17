@@ -4,19 +4,13 @@ import Layout from "@/components/Layout"
 
 const Login: NextPage<{}> = ({}) => {
   return <Layout>
-    <h1 className="text-center">로그인 하기</h1>
-    <a onClick={(ev) => {
-      ev.preventDefault();
-      signIn('google', {callbackUrl: '/paper'});
-    }} 
-    className="p-2 lg:px-4 md:mx-2 text-indigo-600 text-center rounded first:border border-solid border-indigo-600 hover:bg-indigo-600 hover:text-white transition-colors duration-300"
-    >Google 계정으로 로그인</a> 
-    <a onClick={(ev) => {
-      ev.preventDefault();
-      signIn('kakao', {callbackUrl: '/paper'});
-    }} 
-    className="p-2 lg:px-4 md:mx-2 text-indigo-600 text-center rounded first:border border-solid border-indigo-600 hover:bg-indigo-600 hover:text-white transition-colors duration-300"
-    >카카오 계정으로 로그인</a> 
+    <div className='text-center pt-10 pb-5'>
+      <h1 className='text-3xl text-pink tracking-tighter mb-7'>Login</h1>
+    </div>
+    <div className='text-center pb-14 px-6'>
+      <a onClick={(ev) => signIn('google', {callbackUrl: '/paper'})} className="mb-5 block w-full py-4 px-12 mx-auto text-center rounded-full text-gray-500 hover:text-pink neumorphism hover:shadow-inset cursor-pointer">Google 계정 로그인</a>
+      <a onClick={(ev) => signIn('kakao', {callbackUrl: '/paper'})}  className="block w-full py-4 px-12 mx-auto text-center rounded-full text-gray-500 hover:text-pink neumorphism hover:shadow-inset cursor-pointer">카카오 계정 로그인</a>
+    </div>
   </Layout>
 }
 
