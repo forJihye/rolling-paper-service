@@ -8,6 +8,7 @@ const PaperDetail: NextPage<{data: CompletedPaper}> = ({data}) => {
       <div className="py-14 text-center text-3xl text-gray-500 leading-10">😱<br/>남겨진 메시지가 없어요 T_T</div>
     </Layout> 
   } 
+  
   return <Layout>
     <div className="px-6 pt-10 pb-14">
       <h1 className="text-2xl tracking-tight text-center text-gray-500">💌 <span className="text-pink">롤링페이퍼</span> 도착 💌</h1>
