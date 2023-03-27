@@ -1,7 +1,15 @@
 {
-  "name": "rolling-paper-nextjs",
-  "version": "0.1.0",
+  "name": "friends-rolling-papaer",
+  "version": "1.0.0",
+  "description": "My friend's rolling paper making service app.",
   "private": true,
+  "license": "ISC",
+  "keywords": [],
+  "author": {
+    "name": "for.jihye",
+    "url": "https://github.com/forJihye",
+    "email": "qkrwlgp76@gmail.com"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
