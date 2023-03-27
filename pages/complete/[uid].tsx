@@ -1,6 +1,5 @@
-import Layout from "../../components/Layout";
 import { GetServerSideProps, NextPage } from "next";
-
+import Layout from "@/components/Layout";
 
 const PaperDetail: NextPage<{data: CompletedPaper}> = ({data}) => {
   
