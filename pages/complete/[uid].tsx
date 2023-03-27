@@ -5,19 +5,23 @@ const PaperDetail: NextPage<{data: CompletedPaper}> = ({data}) => {
   
   if (!data?.posts.length) {
     return <Layout>
-      <div className="py-12 text-center">
+      <div className="py-14 text-center">
         <div className="text-xl text-gray-500 mb-4">남겨진 메시지가 없어요 T_T</div>
       </div> 
     </Layout> 
   } else {
     return <Layout>
-      <h1>완성 롤링페이퍼</h1>
-      {data?.posts.map((post, i) => {
-        return <div key={`post-${i}`}>
-          <div>{post.name}</div>
-          <div>{post.message}</div>
+      <div className="px-6 pt-10 pb-14">
+        <h1 className="text-2xl text-pink tracking-tight text-center">💌 롤링페이퍼 도착 💌</h1>
+        <div className="mt-6">
+          {data?.posts.map((post, i) => {
+            return <div key={`post-${i}`} className='mt-5 p-4 text-lg bg-neumorphism shadow-insetthin rounded-lg'>
+              <div className="text-pink"><span className="text-gray-500">Who?</span> {post.name}</div>
+              <div className="text-gray-500 whitespace-pre-line">{post.message}</div>
+            </div>
+          })}
         </div>
-      })}
+      </div>
     </Layout>
   }
 }

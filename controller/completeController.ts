@@ -19,7 +19,7 @@ export const createPaperComplete = async (
       completedUid,
       isCompleted: true
     });
-    // 완성 롤릴페이퍼 컬렉션 생성
+    // 완성 롤링페이퍼 컬렉션 생성
     const completeRef = collection(db, `complete`);
     const completeDoc = doc(completeRef, completedUid);
     setDoc(completeDoc, {
