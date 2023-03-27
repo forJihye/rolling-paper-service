@@ -1,8 +1,7 @@
 import { GetServerSideProps, NextPage } from "next";
-import Layout from "@/components/Layout";
+import Layout from "../../components/Layout";
 
 const PaperDetail: NextPage<{data: CompletedPaper}> = ({data}) => {
-  
   if (!data?.posts.length) {
     return <Layout flexCenter={true}>
       <div className="py-14 text-center text-3xl text-gray-500 leading-10">😱<br/>남겨진 메시지가 없어요 T_T</div>
