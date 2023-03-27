@@ -7,11 +7,11 @@ export default function Layout({ title = '', children, ...props }: {title?: stri
   const { data: session } = useSession();
   // console.log(session);
   // flex-auto
-  return <div {...props} className="w-full min-h-screen flex flex-col justify-start py-12">
+  return <div {...props} className="w-full h-full flex flex-col justify-start py-12">
     <Head>
       <title>My Friends Rolling Paper {title}</title>
     </Head>
-    <div className="w-[480px] mx-auto neumorphism rounded-lg">
+    <div className="w-[480px] h-full mx-auto neumorphism rounded-lg">
       <nav className="py-3 px-6 w-full flex flex-row justify-start items-center">
         <Link href='/'>
           <a className="flex justify-center items-center text-gray-500 hover:text-pink w-12 h-12 rounded-full bg-neumorphism shadow-insetthin hover:shadow-drop-insetthin">

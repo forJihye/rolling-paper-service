@@ -63,19 +63,22 @@ const PaperMain: NextPage<{paper: PaperData;}> = ({paper}) => {
     </Layout>
   }
   return <Layout title="">
-    <div className="w-full px-6">
+    <div className="w-full px-6 pt-10 pb-14">
       <div className="w-full text-right mb-5">
         <span className="text-pink text-base">D-Day</span><DdayCountdown dDay={new Date(paper.friendBirth)} />
       </div>
       <div className="text-center mb-6">
-        <div className="text-xl text-pink">{paper.friendName}에게 하고 싶은 말을 남겨줘!</div>
-        <div className="text-sm text-gray-500">욕설과 비난은 {paper.friendName}의 마음을 아프게 합니다 😥</div>
+        <div className="text-xl text-gray-500"><span className="text-pink">{paper.friendName}</span>에게 하고 싶은 말을 남겨줘!</div>
+        <div className="text-sm text-gray-500 mt-2">욕설과 비난은 {paper.friendName}의 마음을 아프게 합니다 😥</div>
       </div>
       {!paper.isCompleted 
       ? <PostForm ref={formRef} targetPost={targetPost as PostData} onPostSubmit={onPostSubmit} btnText={btnText} userName={paper.userName} /> 
-      : <Link href={`/complete/${paper.completedUid}`}>
-          <a className="block w-full py-5 px-12 mx-auto text-center rounded-full text-pink neumorphism hover:shadow-inset">롤링페이퍼가 완성됐어요💝</a>
-        </Link>}
+      : <div className="pt-8">
+        <Link href={`/complete/${paper.completedUid}`}>
+          <a className="block w-full py-5 px-12 mx-auto text-center rounded-full text-gray-500 neumorphism hover:shadow-inset">롤링페이퍼가 <span className="text-pink">완성</span>됐어요 💝</a>
+        </Link>
+      </div>
+      }
     </div>
   </Layout>
 }

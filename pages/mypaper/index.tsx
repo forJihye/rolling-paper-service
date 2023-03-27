@@ -3,8 +3,9 @@ import { MouseEvent, useEffect, useState } from "react";
 import ky from "ky";
 import Router from "next/router";
 import Layout from "@/components/Layout";
-import UserPaperList from "@/components/UserPaperList";
+import MyPaperList from "@/components/MyPaperList";
 import { getSession } from "next-auth/react";
+import Link from "next/link";
 
 export type MyPapersData = (PaperData & {checked: boolean})[];
 
@@ -68,15 +69,20 @@ const MyPapers: NextPage<{papers: MyPapersData}> = ({papers}) => {
   }
   
   return <Layout>
-    <div className="w-full px-6">
-      <div className="text-2xl text-pink tracking-tight">내가 만든 내 친구 롤링페이퍼</div>
-      <UserPaperList
+    <div className="w-full px-6 pt-10">
+      <div className="text-2xl text-gray-500 tracking-tight text-center">내 친구 롤링페이퍼 관리</div>
+      <MyPaperList
         papers={paperList}
         setPapers={setPaperList}
         onPaperReMake={onPaperReMake}
         onPaperComplete={onPaperComplete}
         onPaperListDelete={onPaperDelete}
       />
+      <div className="py-8 text-center">
+        <Link href="paper">
+          <a className="block w-full py-5 px-12 mx-auto text-center rounded-full text-gray-500 neumorphism hover:shadow-inset hover:text-pink">만들러 가기 🤸🏻</a>
+        </Link>
+      </div>
     </div>
   </Layout>
 }

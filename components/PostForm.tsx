@@ -23,7 +23,7 @@ const PostForm = forwardRef(( {targetPost, onPostSubmit, btnText, userName }: Fo
       />
       <button
         onClick={onPostSubmit}
-        className="block w-full py-5 px-12 mx-auto text-center rounded-full text-pink neumorphism hover:shadow-inset"
+        className="block w-full py-5 px-12 mx-auto text-center rounded-full text-gray-500 neumorphism hover:shadow-inset hover:text-pink"
       >{btnText}</button>
     </form>
     {targetPost && <div className="text-sm text-gray-500 text-right mt-6">

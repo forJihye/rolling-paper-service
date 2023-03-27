@@ -12,7 +12,7 @@ const PaperDetail: NextPage<{data: CompletedPaper}> = ({data}) => {
   } else {
     return <Layout>
       <div className="px-6 pt-10 pb-14">
-        <h1 className="text-2xl text-pink tracking-tight text-center">💌 롤링페이퍼 도착 💌</h1>
+        <h1 className="text-2xl tracking-tight text-center text-gray-500">💌 <span className="text-pink">롤링페이퍼</span> 도착 💌</h1>
         <div className="mt-6">
           {data?.posts.map((post, i) => {
             return <div key={`post-${i}`} className='mt-5 p-4 text-lg bg-neumorphism shadow-insetthin rounded-lg'>
