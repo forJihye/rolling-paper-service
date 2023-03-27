@@ -29,7 +29,7 @@
 
 @layer base {
   html, body {
-    position: realtive;
+    position: relative;
     width: 100%;
     height: 100%;
     font-family: 'DovemayoGothic';

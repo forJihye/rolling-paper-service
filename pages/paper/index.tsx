@@ -26,7 +26,7 @@ const PaperCreate: NextPage = () => {
   const formRef = useRef<HTMLFormElement>(null);
 
   // 롤링 페이퍼 생성
-  const onPaperSubmit = async (ev: MouseEvent) => {
+  const handlerPaperSubmit = async (ev: MouseEvent) => {
     ev.preventDefault();
     try {
       const form = formRef?.current as HTMLFormElement;
@@ -36,7 +36,6 @@ const PaperCreate: NextPage = () => {
       const dateVal = form.date.value;
       if (!nameVal.length || !yearVal.length || !monthVal.length || !dateVal.length) {
         return setIsValid({state: true, message: '친구 이름과 생년월일을 적어주세요😭'});
-        return;
       }
       const paperData = {
         name: nameVal,
@@ -61,36 +60,32 @@ const PaperCreate: NextPage = () => {
   }
 
   return <Layout>
-    <div className="w-full px-6 pt-10 pb-14">
-      <div className="text-2xl text-pink text-center tracking-tight mb-10">내 친구 롤링페이퍼 만들자</div>
+    <div className="w-full px-6 py-10">
+      <div className="text-2xl text-gray-500 text-center tracking-tight mb-10">내 친구 <span className="text-pink">롤링페이퍼</span> 만들기</div>
       <form className="grid grid-cols-1 gap-4" ref={formRef}>
         <div>
-          {/* <label id="name" className="block text-gray-500 pl-2 my-1"> 친구 이름 </label> */}
           <input type="text" name="friendName" id="friendName" maxLength={4} minLength={2}
             className="block w-full py-4 px-6 bg-neumorphism shadow-inset rounded-full outline-none text-gray-500" placeholder="친구 이름" />
         </div>
         <div className="flex justify-center items-center">
           <div className="flex-1">
-            {/* <label id="year" className="block text-gray-500 pl-2 my-1">년도</label> */}
             <input type="text" name="year" id="year" maxLength={4}
               className="block w-full py-4 px-6 bg-neumorphism shadow-inset rounded-full outline-none text-gray-500" placeholder="YYYY"
             />
           </div>
           <div className="flex-1 pl-3">
-            {/* <label id="month" className="block text-gray-500 pl-2 my-1">월</label> */}
             <select name="month" id="month" className="block w-full py-4 px-6 bg-neumorphism shadow-inset rounded-full outline-none text-gray-500">
               {months.map((val, i) => <option key={`month-${i}`} value={val}>{val} 월</option> )}
             </select>
           </div>
           <div className="flex-1 pl-3">
-            {/* <label id="date" className="block text-gray-500 pl-2 my-1">일</label> */}
             <select name="date" id="date" className="block w-full py-4 px-6 bg-neumorphism shadow-inset rounded-full outline-none text-gray-500">
               {dates.map((val, i) => <option key={`date-${i}`} value={val}>{val} 일</option> )}
             </select>
           </div>
         </div>
         {!isValid.state ? null : <div className="text-gray-500 text-base text-center py-4">{isValid.message}</div>}
-        <button onClick={onPaperSubmit} className="block w-full py-5 px-12 mx-auto text-center rounded-full text-pink neumorphism hover:shadow-inset">만들기</button>
+        <button onClick={handlerPaperSubmit} className="block w-full py-5 px-12 mx-auto text-center rounded-full text-gray-500 neumorphism hover:shadow-inset hover:text-pink">만들기</button>
       </form> 
     </div>
   </Layout>

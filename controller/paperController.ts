@@ -1,4 +1,4 @@
-import { deleteDoc, doc, getDoc, runTransaction, updateDoc } from "firebase/firestore";
+import { doc, getDoc, runTransaction, updateDoc } from "firebase/firestore";
 import { db } from "lib/firebase-client";
 import { nanoid } from "nanoid";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -87,16 +87,18 @@ export const deletePapers = async (req: NextApiRequest, res: NextApiResponse<{da
   if (!session) throw 'Permission Denied';
   else {
     try {
-      const userDocRef = doc(db, `users/${session.id}`);
-      const userDoc = await getDoc(userDocRef);
-      if (!userDoc.exists()) throw "Document does not exist!";
-      await deleteDoc(doc(db, `papers/${req.query.uid}`));
-      const userPapers = userDoc.data().papers;
-      const updateUserPapers = userPapers.filter((paperUid: string) => !req.body.paperKeys.includes(paperUid));
-      await updateDoc(userDocRef, { papers: updateUserPapers });
-      return res.json({data: true});
+      await runTransaction(db, async (transaction) => {
+        const userDocRef = doc(db, `users/${session.id}`);
+        const userDoc = await transaction.get(userDocRef);
+        if (!userDoc.exists()) throw "Document does not exist!";
+        const userPapers = userDoc.data().papers as StorePaperData[];
+        const updatedUserPapers = userPapers.filter((paperKey) => !req.body.paperKeys.includes(paperKey));
+        await Promise.all(req.body.paperKeys.map(async (paperUid: string) => await transaction.delete(doc(db, `papers/${paperUid}`))));
+        await transaction.update(userDocRef, { papers: [...updatedUserPapers] });
+      });
+      return res.json({ data: true });
     } catch(e) {
-      return res.json({data: false});
+      return res.json({ data: false });
     }
   }
 }

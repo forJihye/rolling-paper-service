@@ -16,7 +16,7 @@ const PaperDetail: NextPage<{data: CompletedPaper}> = ({data}) => {
         <div className="mt-6">
           {data?.posts.map((post, i) => {
             return <div key={`post-${i}`} className='mt-5 p-4 text-lg bg-neumorphism shadow-insetthin rounded-lg'>
-              <div className="text-pink"><span className="text-gray-500">Who?</span> {post.name}</div>
+              <div className="text-pink">{post.name}</div>
               <div className="text-gray-500 whitespace-pre-line">{post.message}</div>
             </div>
           })}

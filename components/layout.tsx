@@ -3,15 +3,15 @@ import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 
-export default function Layout({ title = '', children, ...props }: {title?: string; children: React.ReactNode}) {
-  const { data: session } = useSession();
-  // console.log(session);
-  // flex-auto
-  return <div {...props} className="w-full h-full flex flex-col justify-start py-12">
+export default function Layout({ title = '', children, flexCenter, ...props }: {title?: string; children: React.ReactNode, flexCenter?: boolean}) {
+  const { data } = useSession();
+  const session = data as UserSession;
+  
+  return <div {...props} className="w-[480px] h-full mx-auto py-12">
     <Head>
       <title>My Friends Rolling Paper {title}</title>
     </Head>
-    <div className="w-[480px] h-full mx-auto neumorphism rounded-lg">
+    <div className="w-full min-h-full flex flex-col neumorphism rounded-lg">
       <nav className="py-3 px-6 w-full flex flex-row justify-start items-center">
         <Link href='/'>
           <a className="flex justify-center items-center text-gray-500 hover:text-pink w-12 h-12 rounded-full bg-neumorphism shadow-insetthin hover:shadow-drop-insetthin">
@@ -20,7 +20,7 @@ export default function Layout({ title = '', children, ...props }: {title?: stri
             </svg>
           </a>
         </Link>
-        <div className="flex ml-auto">
+        <div className="flex ml-auto justify-center items-center">
           {!session 
           ? <Link href='/login'>
               <a className="flex justify-center items-center text-gray-500 hover:text-pink w-12 h-12 rounded-full bg-neumorphism shadow-insetthin hover:shadow-drop-insetthin">
@@ -30,6 +30,7 @@ export default function Layout({ title = '', children, ...props }: {title?: stri
               </a>
             </Link> 
           : <>
+            <div className="text-sm text-gray-500 pr-2"> {session.name} ({session.email}) </div>
             <Link href='/mypaper'>
               <a className="mr-4 flex justify-center items-center text-gray-500 hover:text-pink w-12 h-12 rounded-full bg-neumorphism shadow-insetthin hover:shadow-drop-insetthin">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -45,14 +46,13 @@ export default function Layout({ title = '', children, ...props }: {title?: stri
             </div>
           </>}
         </div>
-        {/* ({session.user?.name} / <small>{session.user?.email}</small>) */}
       </nav>
-      <main className="w-full">
+      <main className={`w-full h-full flex-1 relative ${flexCenter ? 'flex flex-col justify-center items-center text-center' : ''}`}>
         {children}
       </main>
+      <footer className='shrink-0 py-3 border-t border-solid border-gray-300 text-center text-gray-400 text-sm'>
+        &copy; 2023. Park Jihye all rights reserved.
+      </footer>
     </div>
-    {/* <footer className='shrink-0 flex justify-center items-center py-5 border-t border-solid border-gray-500'>
-      <p>footer</p>  
-    </footer> */}
   </div>
 }

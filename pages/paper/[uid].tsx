@@ -19,14 +19,13 @@ const PaperMain: NextPage<{paper: PaperData;}> = ({paper}) => {
   const [btnText, setBtnText] = useState<string>('');
   
   useEffect(() => {
-    // console.log('paper', paper);
     if (!paper) return;
     const postKey = ls.getItem(`${router.query.uid}`);
     const targetPost = paper.posts.find(({key}) => key === postKey);
     setTargetPost(targetPost);
     setPostKey(postKey ? postKey : null);
     setBtnText(!targetPost ? '남기기' : '수정할래');
-  }, []);
+  }, [paper, router.query.uid]);
 
   const onPostSubmit = async (ev: MouseEvent) => { // 롤링페이퍼 메시지 등록
     ev.preventDefault();
@@ -58,14 +57,14 @@ const PaperMain: NextPage<{paper: PaperData;}> = ({paper}) => {
   }
 
   if (!paper) {
-    return <Layout title="">
+    return <Layout flexCenter={true}>
       <div className="py-14 text-center text-3xl text-gray-500 leading-10">😱<br/>롤링페이퍼를 찾을 수가 없어요!</div>
     </Layout>
   }
   return <Layout title="">
-    <div className="w-full px-6 pt-10 pb-14">
+    <div className="w-full px-6 py-10">
       <div className="w-full text-right mb-5">
-        <span className="text-pink text-base">D-Day</span><DdayCountdown dDay={new Date(paper.friendBirth)} />
+        <span className="text-pink text-base">생일 D-Day</span><DdayCountdown dDay={new Date(paper.friendBirth)} />
       </div>
       <div className="text-center mb-6">
         <div className="text-xl text-gray-500"><span className="text-pink">{paper.friendName}</span>에게 하고 싶은 말을 남겨줘!</div>

@@ -12,10 +12,7 @@ type StorePaperData = {
   userId: string;
   userName: string;
   friendName: string;
-  friendBirth: {
-    nanoseconds: number;
-    seconds: number;
-  };
+  friendBirth: { nanoseconds: number; seconds: number; };
   completedUid: string;
   isCompleted: boolean;
   posts: PostData[];

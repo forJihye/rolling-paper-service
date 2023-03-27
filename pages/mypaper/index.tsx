@@ -1,11 +1,11 @@
 import { GetServerSideProps, NextPage } from "next";
 import { MouseEvent, useEffect, useState } from "react";
-import ky from "ky";
 import Router from "next/router";
 import Layout from "@/components/Layout";
 import MyPaperList from "@/components/MyPaperList";
 import { getSession } from "next-auth/react";
 import Link from "next/link";
+import ky from "ky";
 
 export type MyPapersData = (PaperData & {checked: boolean})[];
 
@@ -36,9 +36,10 @@ const MyPapers: NextPage<{papers: MyPapersData}> = ({papers}) => {
     }
   }
 
+  // 롤링페이퍼 재생성
   const onPaperReMake = (uid: string) => async (ev: MouseEvent) => {
     ev.preventDefault();
-    const confirm = window.confirm('롤링페이퍼 링크를 재발급 하시겠습니까?.\n이전 링크는 삭제되어 접속 불가능합니다.');
+    const confirm = window.confirm('롤링페이퍼 다시 만들겠습니까?.\n이전 링크는 삭제되어 접속 불가능합니다.');
     if (!confirm) return;
     try {
       const response = await ky.post(`/api/paper/`, { json: {uid} });
@@ -68,8 +69,19 @@ const MyPapers: NextPage<{papers: MyPapersData}> = ({papers}) => {
     }
   }
   
+  if (!paperList.length) {
+    return <Layout flexCenter={true}>
+      <div className="text-2xl text-gray-500 text-center leading-10">😱<br/>만든 롤링페이퍼가 없어요 T_T</div>
+      <div className="pt-8 text-center">
+        <Link href="paper">
+          <a className="block w-full py-5 px-12 mx-auto text-center rounded-full text-gray-500 neumorphism hover:shadow-inset hover:text-pink">만들러 가자 🤸🏻</a>
+        </Link>
+      </div>
+    </Layout>
+  }
+  
   return <Layout>
-    <div className="w-full px-6 pt-10">
+    <div className="w-full px-6 py-10">
       <div className="text-2xl text-gray-500 tracking-tight text-center">내 친구 롤링페이퍼 관리</div>
       <MyPaperList
         papers={paperList}
@@ -78,9 +90,9 @@ const MyPapers: NextPage<{papers: MyPapersData}> = ({papers}) => {
         onPaperComplete={onPaperComplete}
         onPaperListDelete={onPaperDelete}
       />
-      <div className="py-8 text-center">
+      <div className="pt-8 text-center">
         <Link href="paper">
-          <a className="block w-full py-5 px-12 mx-auto text-center rounded-full text-gray-500 neumorphism hover:shadow-inset hover:text-pink">만들러 가기 🤸🏻</a>
+          <a className="block w-full py-5 px-12 mx-auto text-center rounded-full text-gray-500 neumorphism hover:shadow-inset hover:text-pink">만들러 가자 🤸🏻</a>
         </Link>
       </div>
     </div>

@@ -3,8 +3,9 @@ import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Layout from "@/components/Layout";
-import ky from "ky";
 import PostAdmin from "@/components/PostAdmin";
+import ky from "ky";
+import Link from "next/link";
 
 export type PaperPostData = {
   uid: string;
@@ -28,9 +29,20 @@ const PaperAdmin: NextPage<{paper: PaperPostData}> = ({paper}) => {
     router.reload();
   }
   
-  return <Layout title="메시지 관리">
-    <div className="w-full px-6">
-      <div className="text-2xl text-gray-500 tracking-tight"><span className="text-pink">{paper.friendName}</span>에게 남겨진 메시지</div>
+  if (!posts.length) {
+    return <Layout flexCenter={true}>
+      <div className="text-2xl text-gray-500 text-center leading-10">😱<br/>남겨진 메시지가 없어요 T_T</div>
+      <div className="pt-8 text-center">
+        <Link href={`/paper/${router.query.uid}`}>
+          <a className="block w-full py-5 px-12 mx-auto text-center rounded-full text-gray-500 neumorphism hover:shadow-inset hover:text-pink">메시지 남기러 가자 🤸🏻</a>
+        </Link>
+      </div>
+    </Layout>
+  }
+  
+  return <Layout>
+    <div className="w-full px-6 py-10">
+      <div className="text-2xl text-gray-500 tracking-tight text-center"><span className="text-pink">{paper.friendName}</span>에게 남겨진 메시지</div>
       <PostAdmin posts={posts} setPosts={setPosts} onPostDelete={onPostDelete} />
     </div>
   </Layout>
