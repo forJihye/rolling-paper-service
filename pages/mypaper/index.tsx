@@ -12,9 +12,8 @@ const MyPapers: NextPage<{papers: MyPapersData}> = ({papers}) => {
   const [paperList, setPaperList] = useState<MyPapersData>([]);
 
   useEffect(() => {
-    // console.log(papers)
     setPaperList(papers);
-  }, []);
+  }, [papers]);
 
   // 롤링 페이퍼 완성
   const onPaperComplete = (uid: string) => async (ev: MouseEvent) => {
@@ -56,11 +55,12 @@ const MyPapers: NextPage<{papers: MyPapersData}> = ({papers}) => {
   }
   
   // 롤링 페이퍼 삭제
-  const onPaperDelete = async (papers: MyPapersData) => {
-    if (!papers) return;
+  const onPaperDelete = async (checkedPaper: MyPapersData) => {
     try {
-      const deleted = papers.map(async (paper) => await ky.delete(`/api/paper/${paper.uid}`));
-      await Promise.all([...deleted]);
+      const confirm = window.confirm('선택한 롤링페이퍼를 삭제할까요?\n남겨진 메시지도 모두 삭제되어요 T_T');
+      if (!confirm) return;
+      const paperKeys = checkedPaper.map(({uid}) => uid);
+      await ky.delete(`/api/paper`, { json: { paperKeys } });
       Router.reload();
     } catch (e: any) {
       throw Error(e);
@@ -69,6 +69,7 @@ const MyPapers: NextPage<{papers: MyPapersData}> = ({papers}) => {
   
   return <Layout>
     <div className="w-full px-6">
+      <div className="text-2xl text-pink tracking-tight">내가 만든 내 친구 롤링페이퍼</div>
       <UserPaperList
         papers={paperList}
         setPapers={setPaperList}

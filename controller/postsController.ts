@@ -8,7 +8,8 @@ export const deletePosts = async (req: NextApiRequest, res: NextApiResponse<{dat
     const paperDoc = await getDoc(paperDocRef);
     if (!paperDoc.exists()) throw "Document does not exist!";
     const posts = paperDoc.data().posts as PostData[];
-    const updatePosts = posts.filter(({key}) => !req.body.posts.includes(key));
+    const updatePosts = posts.filter(({key}) => !req.body.postKeys.includes(key));
+    console.log(updatePosts)
     updateDoc(paperDocRef, { posts: updatePosts });
     return res.status(200).json({data: updatePosts});
   } catch(e) {

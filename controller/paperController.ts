@@ -82,7 +82,7 @@ export const getPaperByUid = async (req: NextApiRequest, res: NextApiResponse<{p
 }
 
 // 롤링페이퍼 삭제
-export const deletePaperByUid = async (req: NextApiRequest, res: NextApiResponse<{data: boolean}>) => {
+export const deletePapers = async (req: NextApiRequest, res: NextApiResponse<{data: boolean}>) => {
   const session = await getSession({req}) as UserSession;
   if (!session) throw 'Permission Denied';
   else {
@@ -92,10 +92,8 @@ export const deletePaperByUid = async (req: NextApiRequest, res: NextApiResponse
       if (!userDoc.exists()) throw "Document does not exist!";
       await deleteDoc(doc(db, `papers/${req.query.uid}`));
       const userPapers = userDoc.data().papers;
-      const updateUserPapers = userPapers.filter((paperUid: string) => paperUid !== req.query.uid);
-      await updateDoc(userDocRef, {
-        papers: updateUserPapers
-      });
+      const updateUserPapers = userPapers.filter((paperUid: string) => !req.body.paperKeys.includes(paperUid));
+      await updateDoc(userDocRef, { papers: updateUserPapers });
       return res.json({data: true});
     } catch(e) {
       return res.json({data: false});
