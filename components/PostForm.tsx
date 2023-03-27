@@ -18,7 +18,7 @@ const PostForm = forwardRef(( {targetPost, onPostSubmit, btnText, userName }: Fo
       />
       <textarea name="message" id="message" rows={8}
         className="block w-full py-4 px-6 bg-neumorphism shadow-inset rounded-xl outline-none text-gray-500 resize-none" 
-        placeholder="여기에 하고싶은말 작성해줘~"
+        placeholder="여기에 하고 싶은 말 작성 해줘~"
         defaultValue={targetPost?.message ?? ''}
       />
       <button

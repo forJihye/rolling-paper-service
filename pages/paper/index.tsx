@@ -30,20 +30,23 @@ const PaperCreate: NextPage = () => {
     ev.preventDefault();
     try {
       const form = formRef?.current as HTMLFormElement;
+      // const yearVal = form.year.value;
+      const yearVal = new Date().getFullYear();
       const nameVal = form.friendName.value;
-      const yearVal = form.year.value;
       const monthVal = form.month.value;
       const dateVal = form.date.value;
-      if (!nameVal.length || !yearVal.length || !monthVal.length || !dateVal.length) {
+      if (!nameVal.length ||!monthVal.length || !dateVal.length) {
         return setIsValid({state: true, message: '친구 이름과 생년월일을 적어주세요😭'});
       }
+      const birthDate = new Date(`${yearVal}-${monthVal}-${dateVal}`);
       const paperData = {
         name: nameVal,
         year: Number(yearVal),
-        birthDate: new Date(`${yearVal}-${monthVal}-${dateVal}`),
+        birthDate: birthDate,
       };
       const validation = Paper.safeParse(paperData);
       if (!validation.success) return setIsValid({state: true, message: '세상에 존재하지 않는 생년월일이에요 😭'});
+      if (birthDate.getTime() < new Date().getTime()) return setIsValid({state: true, message: '이미 생일이 지났어요 😭'});
       const response = await ky.put('/api/paper', {
         json: {
           name: paperData.name,
@@ -68,12 +71,12 @@ const PaperCreate: NextPage = () => {
             className="block w-full py-4 px-6 bg-neumorphism shadow-inset rounded-full outline-none text-gray-500" placeholder="친구 이름" />
         </div>
         <div className="flex justify-center items-center">
-          <div className="flex-1">
+          {/* <div className="flex-1">
             <input type="text" name="year" id="year" maxLength={4}
               className="block w-full py-4 px-6 bg-neumorphism shadow-inset rounded-full outline-none text-gray-500" placeholder="YYYY"
             />
-          </div>
-          <div className="flex-1 pl-3">
+          </div> */}
+          <div className="flex-1">
             <select name="month" id="month" className="block w-full py-4 px-6 bg-neumorphism shadow-inset rounded-full outline-none text-gray-500">
               {months.map((val, i) => <option key={`month-${i}`} value={val}>{val} 월</option> )}
             </select>

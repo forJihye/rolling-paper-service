@@ -37,10 +37,10 @@ const DdayCountdown: NextPage<{dDay: Date}> = ({dDay}) => {
     return Math.floor((timeDist % (1000 * 60)) / 1000);
   }
 
-  return <div className={`inline-block pl-3 text-base ${dayBefore ? 'text-gray-500' : 'text-pink'}`}>
-    <span>{getDays()}일</span>
-    <span>{getHours()}시</span>
-    <span>{getMinutes()}분</span>
+  return <div className={`inline-block pl-2 text-base ${dayBefore ? 'text-gray-500' : 'text-pink'}`}>
+    <span>{getDays()}일 </span>
+    <span>{getHours()}시 </span>
+    <span>{getMinutes()}분 </span>
     <span>{getSeconds()}초</span>
   </div>
 }
