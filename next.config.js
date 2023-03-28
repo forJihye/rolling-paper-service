@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+import tsconfigPaths from 'vite-tsconfig-paths'
 
 const path = require('path')
 
@@ -12,17 +13,7 @@ const nextConfig = {
       sizeLimit: '1mb',
     },
   },
-  resolve: {
-    alias: [
-      { 
-        find: "@/components",
-        replacement: path.resolve(__dirname, "components") 
-      },
-    ],
-  },
-  // env: {
-  //   BASE_URL: process.env.BASE_URL,
-  // },
+  plugins: [tsconfigPaths()],
 }
 
 module.exports = nextConfig
