@@ -3,7 +3,6 @@ import GoogleProvider from "next-auth/providers/google";
 import KakaoProvider from "next-auth/providers/kakao";
 import { db } from "lib/firebase-admin";
 import { FirestoreAdapter } from "@next-auth/firebase-adapter";
-import { collection, query, getDoc, where, limit, doc, getDocs, addDoc, updateDoc, deleteDoc, runTransaction } from "firebase/firestore";
 
 export default NextAuth({
   providers: [
