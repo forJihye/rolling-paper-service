@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
-import tsconfigPaths from 'vite-tsconfig-paths'
 
 const path = require('path')
+const tsconfigPaths = require('vite-tsconfig-paths');
 
 const nextConfig = {
   reactStrictMode: true,
