@@ -9,7 +9,7 @@ if (!admin.apps.length) {
       type: process.env.FIREBASE_ADMIN_TYPE,
       project_id: process.env.FIREBASE_ADMIN_PROJECT_ID,
       private_key_id: process.env.FIREBASE_ADMIN_PRIVATE_KEY_ID,
-      private_key: Buffer.from(process.env.FIREBASE_ADMIN_PRIVATE_KEY as string).toString(),
+      private_key: JSON.parse(process.env.FIREBASE_ADMIN_PRIVATE_KEY as string),
       client_email: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
       client_id: process.env.FIREBASE_ADMIN_CLIENT_ID,
       auth_uri: process.env.FIREBASE_ADMIN_AUTH_URI,
