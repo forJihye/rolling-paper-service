@@ -81,7 +81,7 @@ const MyPapers: NextPage<{papers: MyPapersData}> = ({papers}) => {
   }
   
   return <Layout>
-    <div className="w-full px-6 py-10">
+    <div className="w-full px-4 py-8 sm:px-6 sm:py-10">
       <div className="text-2xl text-gray-500 tracking-tight text-center">내 친구 롤링페이퍼 관리</div>
       <MyPaperList
         papers={paperList}

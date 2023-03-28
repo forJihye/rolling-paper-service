@@ -40,7 +40,7 @@ const MyPaperList: NextPage<{
   }
 
   return <div className="w-full h-full mt-4 relative">
-    <button className={`block ml-auto px-4 py-1 rounded-lg text-base bg-neumorphism ${!isDelete ? 'shadow-insetthin text-gray-400' : 'shadow-drop-insetthin text-pink'}`} onClick={handlerIsDelete}>선택</button>
+    <button className={`block ml-auto px-4 py-1 rounded-lg text-sm sm:text-base bg-neumorphism ${!isDelete ? 'shadow-insetthin text-gray-400' : 'shadow-drop-insetthin text-pink'}`} onClick={handlerIsDelete}>선택</button>
     {papers.map((paper, i) => {
       const currentBirthDay = setYear(new Date(paper.friendBirth), new Date().getFullYear());
       const betweenDate = differenceInDays(removeTimeFromDate(currentBirthDay), removeTimeFromDate(new Date()));
@@ -69,17 +69,17 @@ const MyPaperList: NextPage<{
         {!paper.isCompleted 
         ? <div className="flex flex-row justify-between items-center mt-4">
             {betweenDate < 7 
-            ? <button onClick={onPaperComplete(paper.uid)} className='flex-1 mr-3 block py-3 px-4 rounded-3xl text-center bg-neumorphism shadow-insetthin hover:shadow-drop-insetthin'>
-              <span className="text-base text-pink animate-pulse">완성하기</span>
+            ? <button onClick={onPaperComplete(paper.uid)} className='flex-1 mr-1 sm:mr-3 block py-3 px-4 rounded-3xl text-center bg-neumorphism shadow-insetthin hover:shadow-drop-insetthin'>
+              <span className="text-sm sm:text-base text-pink animate-pulse">완성하기</span>
             </button>
             : null}
             <Link href={`mypaper/${paper.uid}`}>
-              <a className='flex-1 mr-3 block py-3 px-4 rounded-3xl text-center text-base text-gray-500 bg-neumorphism shadow-insetthin hover:shadow-drop-insetthin'>메시지 관리</a>
+              <a className='flex-1 mr-1 sm:mr-3 block py-3 px-4 rounded-3xl text-center text-sm sm:text-base text-gray-500 bg-neumorphism shadow-insetthin hover:shadow-drop-insetthin'>메시지 관리</a>
             </Link>
-            <button onClick={onPaperReMake(paper.uid)} className='flex-1 block py-3 px-4 rounded-3xl text-center text-base text-gray-500 bg-neumorphism shadow-insetthin hover:shadow-drop-insetthin'>다시 만들기</button>
+            <button onClick={onPaperReMake(paper.uid)} className='flex-1 block py-3 px-4 rounded-3xl text-center text-sm sm:text-base text-gray-500 bg-neumorphism shadow-insetthin hover:shadow-drop-insetthin'>다시 만들기</button>
           </div>
         : <Link href={{ pathname: `complete/[uid]`, query: { uid: paper.completedUid } }}>
-            <a className='w-full block mt-4 py-3 px-4 rounded-3xl text-center text-base text-gray-500 bg-neumorphism shadow-insetthin hover:shadow-drop-insetthin'><span className="text-pink">💌 롤링페이퍼</span> 보러가기</a>
+            <a className='w-full block mt-4 py-3 px-4 rounded-3xl text-center text-sm sm:text-base text-gray-500 bg-neumorphism shadow-insetthin hover:shadow-drop-insetthin'><span className="text-pink">💌 롤링페이퍼</span> 보러가기</a>
           </Link>
         }
       </div>
