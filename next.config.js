@@ -12,10 +12,14 @@ const nextConfig = {
       sizeLimit: '1mb',
     },
   },
-  "rules": {
-    "react/no-unescaped-entities": "off",
-    "@next/next/no-page-custom-font": "off"
-  }
+  resolve: {
+    alias: [
+      { 
+        find: "@/components",
+        replacement: path.resolve(__dirname, "components") 
+      },
+    ],
+  },
   // env: {
   //   BASE_URL: process.env.BASE_URL,
   // },
